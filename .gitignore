@@ -1,3 +1,5 @@
+private/
+
 # Xcode
 .DS_Store
 build/
