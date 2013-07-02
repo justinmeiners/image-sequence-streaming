@@ -51,3 +51,23 @@ ISSequenceDragView* view = [[ISSequenceDragView alloc] initWithSequence:sequence
 															   
 ```
 
+```Objective-C
+/* creating a grid control view */
+
+/* 
+ when touch is enabled for grid view touches cause the view to load the grid cell nearest to the touch
+ */
+
+ISSequenceGridView* view = [[ISSequenceGridView alloc] initWithSequence:sequence
+                                                        refreshInterval:1
+                                                        useTextureCache:YES
+                                                                  range:[sequence range]
+                                                               rowCount:21 /* 21 frames per column */
+                                                           touchEnabled:YES];
+
+															   
+[self addSubview:view];
+															   
+```
+
+
