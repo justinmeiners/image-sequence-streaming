@@ -1,7 +1,7 @@
 image-sequence-streaming
 ========================
 
-Image sequences are a powerful tool for creating interactive content in iOS applications. Unfortuantly, conventional image sequences (using UIImageView or homebrew) have several severe drawbacks as they require all, or many frames, to be loaded into memory at once.
+Image sequences are a powerful tool for creating interactive content with outstanding visual quality in iOS applications. Unfortuantly, conventional image sequences (using UIImageView or homebrew) have several severe drawbacks as they require all, or many frames, to be loaded into memory at once.
 - Long load times.
 - Huge memory footpring.
 - Hard limit on the number of frames due to memory.
@@ -17,13 +17,18 @@ This project aims to overcome these limitations by streaming individual frames, 
 
 The only tradeoffs for this approach is that filesize for a sequence is often significantly larger than the original images and sequences must be precompiled.
 
-Included in this project:
+### Included in this project: ###
 - A command line tool for building a collection of PNGs into a single optimized sequence file. (sequencebuild)
-- A C module for loading sequences and random frame access. (ISSequenceHandle)
+- A C module for loading sequences and random frame access. (ISSequenceStream)
 - An Objective-C wrapper for the C module (ISSequence)
 - OpenGL ES and Core Video powered Objective-C view classes for displaying interactive sequences. These include a base renderer, linear playback, horizontal and vertical drag control, and grid cell control, (ISSequenceView, etc)
 - A sample project and sequence.
 
+
+**Note:** Simulator performance is not a good indicator of device performance especially in this project. Always be sure to test on device.
+
+
+### Usage: ###
 
 ```Objective-C
 /* loading a sequence */
