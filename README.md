@@ -62,7 +62,7 @@ ISSequenceGridView* view = [[ISSequenceGridView alloc] initWithSequence:sequence
                                                         refreshInterval:1
                                                         useTextureCache:YES
                                                                   range:[sequence range]
-                                                               rowCount:21 /* 21 frames per column */
+                                                           framesPerRow:21
                                                            touchEnabled:YES];
 
 															   
