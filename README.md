@@ -1,7 +1,7 @@
 image-sequence-streaming
 ========================
 
-Image sequences are a powerful tool for creating interactive content in iOS applications. Unfortuantly, conventional image sequences (using UIImageView or homebrew) have several severe drawbacks as they require all or many frames to be loaded at once.
+Image sequences are a powerful tool for creating interactive content in iOS applications. Unfortuantly, conventional image sequences (using UIImageView or homebrew) have several severe drawbacks as they require all or many frames to be loaded into memory at once.
 - Long load times.
 - Huge memory footpring.
 - Hard limit on the number of frames due to memory.
