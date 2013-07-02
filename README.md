@@ -7,9 +7,7 @@ Image sequences are a powerful tool for creating interactive content in iOS appl
 - Hard limit on the number of frames due to memory.
 - Slow framerates due to core graphics/UIKit limitations.
 
-This project aims to overcome these limitations by streaming individual frames, as fast as possible, from an optimized sequence file. 
-
-The approach used in this project offers many benefits over traditional methods:
+This project aims to overcome these limitations by streaming individual frames, as fast as possible, from an optimized sequence file. This unique approach offers many benefits over traditional methods:
 - No load times.
 - Constant small memory footprint (a few frames at most) regardless of frame count.  
 - Nearly unlimted sequence length.
