@@ -1,7 +1,7 @@
 image-sequence-streaming
 ========================
 
-Image sequences are a powerful tool for creating interactive content in iOS applications. Unfortuantly, conventional image sequences (using UIImageView or homebrew) have several severe drawbacks as they require all or many frames to be loaded into memory at once.
+Image sequences are a powerful tool for creating interactive content in iOS applications. Unfortuantly, conventional image sequences (using UIImageView or homebrew) have several severe drawbacks as they require all, or many frames, to be loaded into memory at once.
 - Long load times.
 - Huge memory footpring.
 - Hard limit on the number of frames due to memory.
@@ -11,6 +11,7 @@ This project aims to overcome these limitations by streaming individual frames, 
 - No load times.
 - Constant small memory footprint (a few frames at most) regardless of frame count.  
 - Nearly unlimted sequence length.
+- No image quality loss.
 - Silky smooth framerates that often reach 30-60 FPS which is faster than conventional video playback.
 - Sequence stretching - a sequence can be made at a smaller resolution than displayed to improve performance and reduce data size.
 
