@@ -21,4 +21,27 @@ Included in this project:
 - A C module for loading sequences and random frame access. (ISSequenceHandle)
 - An Objective-C wrapper for the C module (ISSequence)
 - OpenGL ES and Core Video powered Objective-C view classes for displaying interactive sequences. These include a base renderer, linear playback, horizontal and vertical drag control, and grid cell control, (ISSequenceView, etc)
+- A sample project and sequence.
+
+
+```Objective-C
+/* loading a sequence */
+ISSequence* sequence = [ISSequence sequenceNamed:@"sequence.seq"];
+
+```
+
+```Objective-C
+/* creating a drag control view */
+ISSequenceDragView* view = [[ISSequenceDragView alloc] initWithSequence:sequence
+                                                        refreshInterval:1 /* refresh rate */
+                                                        useTextureCache:YES /* texture cache is an optional core video optimization */
+                                                                  loops:true
+                                                                  range:[sequence range]
+                                                          dragDirection:kISSequnceDragDirectionHorizontal
+                                                        dragSensitivity:2.0
+                                                               delegate:NULL];
+															   
+[self addSubview:view];
+															   
+```
 
