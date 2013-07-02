@@ -13,7 +13,7 @@ The approach used in this project offers many benefits over traditional methods:
 - No load times.
 - Constant small memory footprint (a few frames at most) regardless of frame count.  
 - Nearly unlimted sequence length.
-- Fast framerates that often reach 30-60 FPS which is faster than most video playback.
+- Silky smooth framerates that often reach 30-60 FPS which is faster than conventional video playback.
 - Sequence stretching - a sequence can be made at a smaller resolution than displayed to improve performance and reduce data size.
 
 The only tradeoffs for this approach is that filesize for a sequence is often significantly larger than the original images and sequences must be precompiled.
