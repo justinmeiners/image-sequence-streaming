@@ -17,6 +17,9 @@ This project aims to overcome these limitations by streaming individual frames, 
 
 The only tradeoffs for this approach is that filesize for a sequence is often significantly larger than the original images and sequences must be precompiled.
 
+
+A special thanks to LZ4. This is by far the most effecient decompression algorithim out there (based on testing with >6 competing algorithims), and this project would not have been possible without it.
+
 ### Included in this project: ###
 - A command line tool for building a collection of PNGs into a single optimized sequence file. (sequencebuild)
 - A C module for loading sequences and random frame access. (ISSequenceStream)
