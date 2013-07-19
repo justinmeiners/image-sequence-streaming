@@ -73,4 +73,12 @@ ISSequenceGridView* view = [[ISSequenceGridView alloc] initWithSequence:sequence
 															   
 ```
 
+### Sample: ###
+
+![car1](https://raw.github.com/narpas/image-sequence-streaming/master/readme_screenshot1.png)
+![car2](https://raw.github.com/narpas/image-sequence-streaming/master/readme_screenshot2.png)
+![car3](https://raw.github.com/narpas/image-sequence-streaming/master/readme_screenshot3.png)
+
+
+
 
