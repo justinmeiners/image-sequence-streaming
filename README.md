@@ -86,7 +86,7 @@ An optional -nocompress flag can be applied. This greatly increases filesize, bu
 
 ### Sample: ###
 
-Due to Github's limit of 100mb per file, the quality of the sample sequence included in this project was reduced to fit the file size. The resolution was reduced from 1024x768 to 960x720 and every other frame was removed. You can safely expect to display higher resolution sequences in your own applications.
+Due to Github's limit of 100mb per file, the quality of the sample sequence included in this project is limited. The resolution was reduced from 1024x768 to 960x720 and every other frame was removed. You can safely expect to display higher resolution sequences in your own applications.
 
 ![car1](https://raw.github.com/narpas/image-sequence-streaming/master/readme_screenshot1.png)
 ![car2](https://raw.github.com/narpas/image-sequence-streaming/master/readme_screenshot2.png)
