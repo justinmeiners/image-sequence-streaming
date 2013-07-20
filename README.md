@@ -18,7 +18,7 @@ This project aims to overcome these limitations by streaming individual frames, 
 The only tradeoffs for this approach is that filesize for a sequence is often significantly larger than the original images and sequences must be precompiled.
 
 
-A special thanks to [LZ4](http://fastcompression.blogspot.com/p/lz4.html). This is by far the most effecient realtime decompression algorithim out there and this project would not have been possible without it.
+A special thanks to [LZ4](http://fastcompression.blogspot.com/p/lz4.html). This is by far the most effecient realtime decompression algorithim out there and this project would not have been possible without it. Also thanks to Steve Glauser for creating and rendering the sample image sequence.
 
 ### Included in this project: ###
 - A command line tool for building a collection of PNGs into a single optimized sequence file. (sequencebuild)
@@ -32,6 +32,7 @@ A special thanks to [LZ4](http://fastcompression.blogspot.com/p/lz4.html). This 
 
 
 ### Usage: ###
+
 
 ```Objective-C
 /* loading a sequence */
@@ -72,6 +73,16 @@ ISSequenceGridView* view = [[ISSequenceGridView alloc] initWithSequence:sequence
 [self addSubview:view];
 															   
 ```
+### Building ###
+
+Sequences must be compiled using the included sequencebuild tool. Type the following command into terminal:
+
+```
+sequencebuild path/to/image_folder path/to/save_file
+
+```
+
+An optional -nocompress flag can be applied. This greatly increases filesize, but my be faster for smaller sequences. Profile to determine best performance.
 
 ### Sample: ###
 
