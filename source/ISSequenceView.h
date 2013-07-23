@@ -36,6 +36,8 @@
 /* texture caching involves using a CVOpenGLESTextureCache to take advantage of optimal texture
  upload speeds. It currently is not available on the simulator and will force to false. */
 
+
+
 - (id)initWithSequence:(ISSequence*)sequence
        refreshInterval:(int)interval
        useTextureCache:(bool)textureCache;
