@@ -14,8 +14,8 @@
 #pragma mark ISSequenceView
 #pragma mark -
 
-
-// retain cycle fix is to use the object proxy
+/* This is a seperate proxy class so as to avoid retain cycles
+ For some reason display links retain their targets.. */
 
 @interface _ISSequenceDisplayLink : NSObject
 {
@@ -113,6 +113,7 @@
 
 @end
 
+/* vertex shader for OpenGL - Extremely basic */
 static const char* const _kISSequenceViewVSH =
 "attribute mediump vec4 a_vertex; \
 attribute mediump vec2 a_uv; \
@@ -124,7 +125,8 @@ gl_Position = a_vertex; \
 }";
 
 
-/* note the B - R swap in this shader */
+/* fragment shader for OpenGL */
+/* note the B - R swap in this shader - I wonder what the perfomance impacts are?*/
 static const char* const _kISSequenceViewFSH =
 "uniform lowp sampler2D u_image; \
 varying mediump vec2 v_uv; \
@@ -135,7 +137,7 @@ gl_FragColor = vec4(color.b, color.g, color.r, color.a); \
 }";
 
 
-
+/* OpenGL shader attributes */
 static const char* const _kISSequenceViewVertexAttribName = "a_vertex";
 static const char* const _kISSequenceViewUVAttribName = "a_uv";
 static const char* const _kISSequenceViewImageUniformName = "u_image";
@@ -309,6 +311,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 - (void)setupFramebuffers
 {
+    /* setup colorbuffer - no depth */
     glGenFramebuffers(1, &_framebuffer);
     glGenRenderbuffers(1, &_colorbuffer);
     
@@ -321,7 +324,6 @@ static const GLfloat _kISSequenceViewUVs[] =
     
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
-        
         NSException* exception = [NSException exceptionWithName:@"failed to allocate framebuffer"
                                                          reason:[NSString stringWithFormat:@"%x", glCheckFramebufferStatus(GL_FRAMEBUFFER)]
                                                        userInfo:nil];
@@ -407,6 +409,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     
     GLuint vertShader, fragShader;
     
+    /* prepare shaders */
     _shaderProgram = glCreateProgram();
     if (![self compileShader:&vertShader type:GL_VERTEX_SHADER source:_kISSequenceViewVSH])
     {
@@ -464,6 +467,7 @@ static const GLfloat _kISSequenceViewUVs[] =
         return;
     }
     
+    /* VBO (Vertex buffer object) */
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(_kISSequenceViewVertices) + sizeof(_kISSequenceViewUVs), NULL, GL_STATIC_DRAW);
@@ -471,7 +475,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_kISSequenceViewVertices), _kISSequenceViewVertices);
     glBufferSubData(GL_ARRAY_BUFFER, sizeof(_kISSequenceViewVertices), sizeof(_kISSequenceViewUVs), _kISSequenceViewUVs);
 
-    
+    /* setuup uniforms - to pass data to shaders */
     _imageUniform = glGetUniformLocation(_shaderProgram, _kISSequenceViewImageUniformName);
     
     if (vertShader)
@@ -502,8 +506,10 @@ static const GLfloat _kISSequenceViewUVs[] =
             [exception raise];
         }
     }
-        
+    
+    /* no need for depth testing in a flat scene */
     glDisable(GL_DEPTH_TEST);
+    /* transparent images */
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
@@ -537,7 +543,8 @@ static const GLfloat _kISSequenceViewUVs[] =
         {
             glGenTextures(1, &_simulatorTextures[i]);            
             glBindTexture(GL_TEXTURE_2D, _simulatorTextures[i]);
-                        
+            
+            /* initial upload */
             glTexImage2D(GL_TEXTURE_2D,
                          0,
                          GL_RGBA,
@@ -573,9 +580,11 @@ static const GLfloat _kISSequenceViewUVs[] =
             glBindTexture(CVOpenGLESTextureGetTarget(_cacheTextures[i]), CVOpenGLESTextureGetName(_cacheTextures[i]));
         }
         
+        /* required for NPOT  textures*/
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
+        /* nice scaling - a more hard edge look can be achieved by setting GL_LINEAR to GL_NEAREST */
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
@@ -595,9 +604,7 @@ static const GLfloat _kISSequenceViewUVs[] =
         }
         
         free(_cacheTextures);
-
     }
-    
 }
 
 - (void)update
@@ -608,9 +615,14 @@ static const GLfloat _kISSequenceViewUVs[] =
 {    
     [EAGLContext setCurrentContext:_context];
     
+    /* lock the pixel buffer */
     CVPixelBufferLockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
+    /* read from the sequence in to the pixel buffer */
     [_sequence getBytes:CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]) atFrame:_currentFrame];
     
+    
+    /* texture caches map pixel buffers directly to a texture - update done
+     without a texture cache we need to repload our new data */
     if (!_useTextureCache)
     {
         glBindTexture(GL_TEXTURE_2D, _simulatorTextures[_currentBuffer]);
@@ -625,8 +637,10 @@ static const GLfloat _kISSequenceViewUVs[] =
                         CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]));
     }
     
+    /* unlock pixel buffer */
     CVPixelBufferUnlockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
     
+    /* prepare next frames buffer index */
     _currentBuffer ++;
     
     if (_currentBuffer >= _bufferCount)
@@ -640,17 +654,17 @@ static const GLfloat _kISSequenceViewUVs[] =
     
     if (_useTextureCache)
     {
-        CVOpenGLESTextureCacheFlush(_textureCache, 0);
+        CVOpenGLESTextureCacheFlush(_textureCache, 0); /* it is not clear what the flush does.. */
         glBindTexture(CVOpenGLESTextureGetTarget(_cacheTextures[_currentBuffer]), CVOpenGLESTextureGetName(_cacheTextures[_currentBuffer]));
     }
-    
+
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (char*)(NULL) + sizeof(_kISSequenceViewVertices));
     
+    /* draw a quad */
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         
     [_context presentRenderbuffer:GL_RENDERBUFFER];
-    
 }
 
 
