@@ -20,6 +20,11 @@
 #define kISSequnceViewBuffersDefault 1
 
 
+/* 
+ use this view to create your own custom sequence interaction/playback objects.
+ Simply call jumpToFrame
+ */
+ 
 @interface ISSequenceView : UIView
 {
     ISSequence* _sequence;
@@ -62,6 +67,7 @@ typedef enum
 
 @end
 
+/* basic linear playback (a movie) */
 @interface ISSequencePlaybackView : ISSequenceView
 {
     BOOL _paused;
@@ -107,6 +113,7 @@ typedef enum
 
 @end
 
+/* basic draw playback - i am thinking about adding intertia */
 @interface ISSequenceDragView : ISSequenceView
 
 @property(nonatomic, assign)BOOL loops;
@@ -123,7 +130,7 @@ typedef enum
                  loops:(BOOL)loops
                  range:(NSRange)range
          dragDirection:(ISSequenceDragDirection)dragDirection
-       dragSensitivity:(float)dragSensitivity
+       dragSensitivity:(float)dragSensitivity /* 1.0 = a finger drags across the width view plays through the entire sequence. 2.0 half drag etc */
               delegate:(id)delegate;
 
 @end
