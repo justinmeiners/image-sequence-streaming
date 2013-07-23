@@ -123,6 +123,8 @@ v_uv = a_uv; \
 gl_Position = a_vertex; \
 }";
 
+
+/* note the B - R swap in this shader */
 static const char* const _kISSequenceViewFSH =
 "uniform lowp sampler2D u_image; \
 varying mediump vec2 v_uv; \
@@ -132,10 +134,13 @@ lowp vec4 color = texture2D(u_image, v_uv); \
 gl_FragColor = vec4(color.b, color.g, color.r, color.a); \
 }";
 
+
+
 static const char* const _kISSequenceViewVertexAttribName = "a_vertex";
 static const char* const _kISSequenceViewUVAttribName = "a_uv";
 static const char* const _kISSequenceViewImageUniformName = "u_image";
 
+/* vertices for OpenGL (fullscreen quad) */
 static const GLfloat _kISSequenceViewVertices[] =
 {
     -1.0,  -1.0,
@@ -144,6 +149,7 @@ static const GLfloat _kISSequenceViewVertices[] =
     1.0, 1.0,
 };
 
+/* UV coordinates for OpenGL (full image) */
 static const GLfloat _kISSequenceViewUVs[] =
 {
     0.0,  1.0,
@@ -151,7 +157,6 @@ static const GLfloat _kISSequenceViewUVs[] =
     0.0,  0.0,
     1.0, 0.0,
 };
-
 
 
 @implementation ISSequenceView
@@ -192,7 +197,13 @@ static const GLfloat _kISSequenceViewUVs[] =
             return NULL;
 		}
         
+        /* 
+         Buffer count is the amount of buffers used to cycle through updates.
+         2 seems to work nicely, you shouldn't need to change this - but if you see weird pixelly artifacts
+         you may want to increase this number to 3 or 4. Increasing buffer count will increase RAM usage.
+         */
         _bufferCount = 2;
+        
         _currentBuffer = 0;
         _framebuffer = 0;
         _colorbuffer = 0;
