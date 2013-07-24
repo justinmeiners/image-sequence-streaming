@@ -82,7 +82,7 @@ sequencebuild path/to/image_folder path/to/save_file
 
 ```
 
-An optional -nocompress flag can be applied. This greatly increases filesize, but my be faster for smaller sequences. Profile to determine best performance.
+An optional **-nocompress** flag can be applied. This greatly increases filesize, but my be faster for smaller sequences. Profile to determine best performance.
 
 ### Sample: ###
 
