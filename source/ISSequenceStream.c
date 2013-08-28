@@ -95,6 +95,18 @@ void ISSequenceStreamDestroy (ISSequenceStreamRef sequence)
             sequence->_filePtr = NULL;
         }
         
+        if (sequence->_readBuffer)
+        {
+            free(sequence->_readBuffer);
+            sequence->_readBuffer = NULL;
+        }
+        
+        if (sequence->_frameInfos)
+        {
+            free(sequence->_frameInfos);
+            sequence->_frameInfos = NULL;
+        }
+        
         free(sequence);
     }
 }
