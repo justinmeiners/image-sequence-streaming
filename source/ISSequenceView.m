@@ -521,6 +521,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 {
     [EAGLContext setCurrentContext:_context];
     
+    glDeleteProgram(_shaderProgram);
     glDeleteBuffers(1, &_vbo);
 }
 
@@ -544,6 +545,7 @@ static const GLfloat _kISSequenceViewUVs[] =
             glGenTextures(1, &_simulatorTextures[i]);            
             glBindTexture(GL_TEXTURE_2D, _simulatorTextures[i]);
             
+            
             /* initial upload */
             glTexImage2D(GL_TEXTURE_2D,
                          0,
@@ -556,6 +558,7 @@ static const GLfloat _kISSequenceViewUVs[] =
         }
         else
         {
+            
             CVReturn status = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
                                                                            _textureCache,
                                                                            _pixelBuffers[i],
