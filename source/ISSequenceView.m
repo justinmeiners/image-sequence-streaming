@@ -4,7 +4,8 @@
  Copyright (c) 2013 Inline Studios
  Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
-
+#import <OpenGLES/ES2/glext.h>
+#import <OpenGLES/ES2/gl.h>
 #import "ISSequenceView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreVideo/CoreVideo.h>
