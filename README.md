@@ -6,7 +6,7 @@ image-sequence-streaming
 Image sequences are animations composed from many individual images (frames). They are very similar to video files, but are designed to be played back non-linearly, meaning frames can be accessed in any order and animations can be played back in any direction.
 
 
-On mobile devices image sequences are a powerful tool for creating interactive content with outstanding visual quality.
+On mobile devices image sequences are a powerful tool for creating interactive content with outstanding visual quality. For example, creating a rotatable 3D product display:
 
 ![car](https://raw.github.com/narpas/image-sequence-streaming/master/screenshots/screen_small.png)
 
