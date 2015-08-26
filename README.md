@@ -8,6 +8,8 @@ Image sequences are animations composed from many individual images (frames). Th
 
 On mobile devices image sequences are a powerful tool for creating interactive content with outstanding visual quality.
 
+![small_car](https://raw.github.com/narpas/image-sequence-streaming/master/screenshots/screen_small.png)
+
 
 ### What is sequence streaming? ###
 
