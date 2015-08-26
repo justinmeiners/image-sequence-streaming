@@ -34,12 +34,12 @@ The main tradeoff for using approach is that filesize for is often significantly
 
  Also thanks to my friend **Steve Glauser** for creating and rendering the sample image sequence.
 
-### Project Components: ###
+### Components: ###
 - A MacOS X command line tool for compiling a collection of PNG frames into an optimized sequence file. (sequencebuild)
 - A C module for working with sequence files. (ISSequenceStream)
 - An Objective-C class for working with sequence files. (ISSequence)
-- OpenGL ES and Core Video powered Objective-C view classes for displaying interactive sequences.
-- Interactive view classes for linear playback, horizontal and vertical drag control, and grid cell control, (ISSequenceView...)
+- OpenGL ES and Core Video powered UIView class for displaying interactive sequences.
+- Interactive UIView classes for linear playback, horizontal and vertical drag control, and grid cell control, (ISSequenceView...)
 - An example project and sample animation sequence.
 
 
