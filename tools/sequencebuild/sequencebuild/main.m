@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2013 Inline Studios
+ Copyright (c) 2015 Justin Meiners
  Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
 

@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F49743921799E12300A461B4 /* MainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F49743911799E12300A461B4 /* MainVC.m */; };
+		D076013C1B8D598F006B762D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D076013B1B8D598F006B762D /* Main.storyboard */; };
+		D076013E1B8D59D2006B762D /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D076013D1B8D59D2006B762D /* MainViewController.xib */; };
 		F497439B1799F52300A461B4 /* car.seq in Resources */ = {isa = PBXBuildFile; fileRef = F497439A1799F52300A461B4 /* car.seq */; };
 		F4FBFBE71783554F00E2D1BD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4FBFBE61783554F00E2D1BD /* UIKit.framework */; };
 		F4FBFBE91783554F00E2D1BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4FBFBE81783554F00E2D1BD /* Foundation.framework */; };
@@ -28,8 +29,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F49743901799E12300A461B4 /* MainVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainVC.h; sourceTree = "<group>"; };
-		F49743911799E12300A461B4 /* MainVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainVC.m; sourceTree = "<group>"; };
+		D076013B1B8D598F006B762D /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		D076013D1B8D59D2006B762D /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 		F497439A1799F52300A461B4 /* car.seq */ = {isa = PBXFileReference; lastKnownFileType = file; path = car.seq; sourceTree = "<group>"; };
 		F4FBFBE31783554F00E2D1BD /* ImageSequence.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageSequence.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4FBFBE61783554F00E2D1BD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -129,8 +130,8 @@
 			children = (
 				F4FBFBF51783555000E2D1BD /* AppDelegate.h */,
 				F4FBFBF61783555000E2D1BD /* AppDelegate.m */,
-				F49743901799E12300A461B4 /* MainVC.h */,
-				F49743911799E12300A461B4 /* MainVC.m */,
+				D076013D1B8D59D2006B762D /* MainViewController.xib */,
+				D076013B1B8D598F006B762D /* Main.storyboard */,
 				F4FBFBED1783555000E2D1BD /* Supporting Files */,
 			);
 			path = ImageSequence;
@@ -220,7 +221,9 @@
 				F4FBFBF11783555000E2D1BD /* InfoPlist.strings in Resources */,
 				F4FBFBF91783555000E2D1BD /* Default.png in Resources */,
 				F4FBFBFB1783555000E2D1BD /* Default@2x.png in Resources */,
+				D076013C1B8D598F006B762D /* Main.storyboard in Resources */,
 				F4FBFBFD1783555000E2D1BD /* Default-568h@2x.png in Resources */,
+				D076013E1B8D59D2006B762D /* MainViewController.xib in Resources */,
 				F497439B1799F52300A461B4 /* car.seq in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -238,7 +241,6 @@
 				F4FBFC101783561600E2D1BD /* ISSequenceStream.c in Sources */,
 				F4FBFC111783561600E2D1BD /* ISSequenceView.m in Sources */,
 				F4FBFC121783561600E2D1BD /* lz4.c in Sources */,
-				F49743921799E12300A461B4 /* MainVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

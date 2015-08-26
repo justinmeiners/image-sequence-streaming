@@ -1,7 +1,7 @@
 /*
  By: Justin Meiners
  
- Copyright (c) 2013 Inline Studios
+ Copyright (c) 2015 Justin Meiners
  Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
 
@@ -19,12 +19,12 @@
 
 + (ISSequence*)sequenceNamed:(NSString*)name
 {
-    return [[[self alloc] initWithFilepath:[[NSBundle mainBundle] pathForResource:name ofType:nil]] autorelease];
+    return [[self alloc] initWithFilepath:[[NSBundle mainBundle] pathForResource:name ofType:nil]];
 }
 
 + (ISSequence*)sequenceFromFilepath:(NSString*)filepath
 {
-    return [[[self alloc] initWithFileAtPath:filepath] autorelease];
+    return [[self alloc] initWithFileAtPath:filepath];
 }
 
 - (id)initWithFilepath:(NSString*)filepath
@@ -35,7 +35,6 @@
         
         if (!_handle)
         {
-            [self release];
             return nil;
         }
     }
@@ -45,7 +44,6 @@
 - (void)dealloc
 {
     ISSequenceStreamDestroy(_handle);
-    [super dealloc];
 }
 
 - (void)getBytes:(char*)buffer atFrame:(int)frame

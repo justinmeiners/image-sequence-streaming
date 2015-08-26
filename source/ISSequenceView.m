@@ -1,7 +1,7 @@
 /*
  By: Justin Meiners
  
- Copyright (c) 2013 Inline Studios
+ Copyright (c) 2015 Justin Meiners
  Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
 #import <OpenGLES/ES2/glext.h>
@@ -19,18 +19,14 @@
  For some reason display links retain their targets.. */
 
 @interface _ISSequenceDisplayLink : NSObject
-{
-    CADisplayLink* _displayLink;
-    id _target;
-    SEL _action;
-}
+
 @property(nonatomic, readonly)CADisplayLink* displayLink;
 @property(nonatomic, assign)id target;
 @property(nonatomic, assign)SEL action;
 
 - (id)initWithTarget:(id)target
               action:(SEL)action
-     refreshInterval:(int)refreshInterval;
+     refreshInterval:(NSInteger)refreshInterval;
 
 - (void)shutdown;
 
@@ -43,14 +39,14 @@
 
 - (id)initWithTarget:(id)target
               action:(SEL)action
-     refreshInterval:(int)refreshInterval
+     refreshInterval:(NSInteger)refreshInterval
 {
     if (self = [super init])
     {
         _target = target;
         _action = action;
         
-        _displayLink = [[CADisplayLink displayLinkWithTarget:self selector:@selector(refreshDisplay:)] retain];
+        _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(refreshDisplay:)];
         _displayLink.frameInterval = refreshInterval;
         [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
     }
@@ -68,7 +64,6 @@
 - (void)shutdown
 {
     [_displayLink invalidate];
-    [_displayLink release];
 }
 
 @end
@@ -171,7 +166,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 }
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
+       refreshInterval:(NSInteger)interval
        useTextureCache:(bool)textureCache
 {
     assert(sequence);
@@ -196,8 +191,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 		if (!_context || ![EAGLContext setCurrentContext:_context])
 		{
 			NSLog(@"error creating OpenGL ES 2.0 context");
-			[self release];
-            return NULL;
+            return nil;
 		}
         
         /* 
@@ -233,6 +227,7 @@ static const GLfloat _kISSequenceViewUVs[] =
         [self setupPixelbuffers];
         [self setupTextureBuffers];
         
+        
         _displayLink = [[_ISSequenceDisplayLink alloc] initWithTarget:self action:@selector(refreshDisplay) refreshInterval:_refreshInterval];
         
         [self redraw];
@@ -245,7 +240,6 @@ static const GLfloat _kISSequenceViewUVs[] =
     [EAGLContext setCurrentContext:_context];
 
     [_displayLink shutdown];
-    [_displayLink release];
     
     self.sequence = nil;
     
@@ -253,15 +247,13 @@ static const GLfloat _kISSequenceViewUVs[] =
     [self shutdownPixelbuffers];
     [self shutdownOpenGL];
     [self shutdownFramebuffers];
-    
-    [super dealloc];
 }
 
 #pragma mark -
 #pragma mark Public
 #pragma mark -
 
-- (void)jumpToFrame:(int)frame
+- (void)jumpToFrame:(NSInteger)frame
 {
     if (frame < 0)
     {
@@ -286,12 +278,12 @@ static const GLfloat _kISSequenceViewUVs[] =
     return _sequence;
 }
 
-- (int)currentFrame
+- (NSInteger)currentFrame
 {
     return _currentFrame;
 }
 
-- (int)refreshInterval
+- (NSInteger)refreshInterval
 {
     return _refreshInterval;
 }
@@ -622,7 +614,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     /* lock the pixel buffer */
     CVPixelBufferLockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
     /* read from the sequence in to the pixel buffer */
-    [_sequence getBytes:CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]) atFrame:_currentFrame];
+    [_sequence getBytes:CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]) atFrame:(int)_currentFrame];
     
     
     /* texture caches map pixel buffers directly to a texture - update done
@@ -721,8 +713,8 @@ static const GLfloat _kISSequenceViewUVs[] =
 @synthesize animationInterval = _animationInterval;
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
-       useTextureCache:(bool)textureCache
+       refreshInterval:(NSInteger)interval
+       useTextureCache:(BOOL)textureCache
                  loops:(BOOL)loops
                  range:(NSRange)range
      playbackDirection:(ISSequencePlaybackDirection)direction
@@ -765,7 +757,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     }
     
     
-    int newFrame = [self currentFrame] + _playbackDirection;
+    NSInteger newFrame = [self currentFrame] + _playbackDirection;
     
     if (_loops)
     {
@@ -861,8 +853,8 @@ static const GLfloat _kISSequenceViewUVs[] =
 @synthesize dragging = _dragging;
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
-       useTextureCache:(bool)textureCache
+       refreshInterval:(NSInteger)interval
+       useTextureCache:(BOOL)textureCache
                  loops:(BOOL)loops
                  range:(NSRange)range
          dragDirection:(ISSequenceDragDirection)dragDirection
@@ -915,8 +907,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     CGPoint point = [[touches anyObject] locationInView:self];
     CGPoint delta = CGPointMake(_lastDragPoint.x - point.x, _lastDragPoint.y - point.y);
     
-    int newFrame = [self currentFrame];
-    
+    NSInteger newFrame = [self currentFrame];
     
     float frameInterval = (self.bounds.size.width / (float)_range.length) / _dragSensitivity;
 
@@ -1020,11 +1011,11 @@ static const GLfloat _kISSequenceViewUVs[] =
 @synthesize range = _range;
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
-       useTextureCache:(bool)textureCache
+       refreshInterval:(NSInteger)interval
+       useTextureCache:(BOOL)textureCache
                  range:(NSRange)range
-          framesPerRow:(int)rowCount
-          touchEnabled:(int)touchEnabled
+          framesPerRow:(NSInteger)rowCount
+          touchEnabled:(NSInteger)touchEnabled
 {
     if (self = [super initWithSequence:sequence
                        refreshInterval:interval
@@ -1043,7 +1034,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     // check if the frames match the size
     if ((range.length % _rowCount) != 0)
     {
-        NSLog(@"ISSequenceGridView requires frameCount: %i to be divisible by rowCount: %i", [[self sequence] frameCount], _rowCount);
+        NSLog(@"ISSequenceGridView requires frameCount: %i to be divisible by rowCount: %i", [[self sequence] frameCount], (int)_rowCount);
     }
     
     _columnCount = range.length / _rowCount;
@@ -1051,7 +1042,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     [self jumpToFrame:_range.location];
 }
 
-- (void)jumpToFrame:(int)frame
+- (void)jumpToFrame:(NSInteger)frame
 {
     [super jumpToFrame:frame];
     
@@ -1059,8 +1050,8 @@ static const GLfloat _kISSequenceViewUVs[] =
     _row = (frame - _range.location) % _rowCount;
 }
 
-- (void)jumpToFrameAtRow:(int)row
-                  column:(int)column
+- (void)jumpToFrameAtRow:(NSInteger)row
+                  column:(NSInteger)column
 {
     assert(row >= 0 && column >= 0 && row < _rowCount && column < _columnCount);
     [self jumpToFrame:(column * _rowCount + row) + _range.location];
@@ -1097,22 +1088,22 @@ static const GLfloat _kISSequenceViewUVs[] =
 }
 
 
-- (int)row
+- (NSInteger)row
 {
     return _row;
 }
 
-- (int)column
+- (NSInteger)column
 {
     return _column;
 }
 
-- (int)rowCount
+- (NSInteger)rowCount
 {
     return _rowCount;
 }
 
-- (int)columnCount
+- (NSInteger)columnCount
 {
     return _columnCount;
 }

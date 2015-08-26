@@ -1,7 +1,7 @@
 /*
  By: Justin Meiners
  
- Copyright (c) 2013 Inline Studios
+ Copyright (c) 2015 Justin Meiners
  Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
 
@@ -121,7 +121,7 @@ void ISSequenceStreamCopyFrame (ISSequenceStreamRef sequence, int frameNumber, c
     if (sequence->_info._compression == IS_SEQUENCE_COMPRESSION)
     {
         fread(sequence->_readBuffer, sequence->_frameInfos[frameNumber]._length, 1, sequence->_filePtr);
-        unsigned int outlength = sequence->_frameSize;
+        unsigned int outlength = (unsigned int)sequence->_frameSize;
         LZ4_uncompress(sequence->_readBuffer, buffer, outlength);
     }
     else

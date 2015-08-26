@@ -1,7 +1,7 @@
 /*
  By: Justin Meiners
  
- Copyright (c) 2013 Inline Studios
+ Copyright (c) 2015 Justin Meiners
  Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
 
@@ -28,8 +28,8 @@
 @interface ISSequenceView : UIView
 {
     ISSequence* _sequence;
-    int _refreshInterval;
-    int _currentFrame;
+    NSInteger _refreshInterval;
+    NSInteger _currentFrame;
     BOOL _useTextureCache;
 }
 
@@ -39,13 +39,13 @@
 
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
+       refreshInterval:(NSInteger)interval
        useTextureCache:(bool)textureCache;
 
-- (void)jumpToFrame:(int)frame;
+- (void)jumpToFrame:(NSInteger)frame;
 
-- (int)currentFrame;
-- (int)refreshInterval;
+- (NSInteger)currentFrame;
+- (NSInteger)refreshInterval;
 - (ISSequence*)sequence;
 
 @end
@@ -82,8 +82,8 @@ typedef enum
 @property(nonatomic, assign)int animationInterval;
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
-       useTextureCache:(bool)textureCache
+       refreshInterval:(NSInteger)interval
+       useTextureCache:(BOOL)textureCache
                  loops:(BOOL)loops
                  range:(NSRange)range
      playbackDirection:(ISSequencePlaybackDirection)direction
@@ -127,7 +127,7 @@ typedef enum
 @property(nonatomic, readonly)BOOL dragging;
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
+       refreshInterval:(NSInteger)interval
        useTextureCache:(bool)textureCache
                  loops:(BOOL)loops
                  range:(NSRange)range
@@ -143,32 +143,32 @@ typedef enum
 
 @interface ISSequenceGridView : ISSequenceView
 {
-    int _row;
-    int _column;
-    int _rowCount;
-    int _columnCount;
+    NSInteger _row;
+    NSInteger _column;
+    NSInteger _rowCount;
+    NSInteger _columnCount;
 }
 @property(nonatomic, assign)BOOL touchEnabled;
 @property(nonatomic, assign)NSRange range;
 
 - (id)initWithSequence:(ISSequence*)sequence
-       refreshInterval:(int)interval
-       useTextureCache:(bool)textureCache
+       refreshInterval:(NSInteger)interval
+       useTextureCache:(BOOL)textureCache
                  range:(NSRange)range
-          framesPerRow:(int)rowCount
-          touchEnabled:(int)touchEnabled;
+          framesPerRow:(NSInteger)rowCount
+          touchEnabled:(NSInteger)touchEnabled;
 
-- (void)jumpToFrameAtRow:(int)row
-                  column:(int)column;
+- (void)jumpToFrameAtRow:(NSInteger)row
+                  column:(NSInteger)column;
 
 
 // x coordinate
-- (int)row;
+- (NSInteger)row;
 
 // y coordinate
-- (int)column;
+- (NSInteger)column;
 
-- (int)rowCount;
-- (int)columnCount;
+- (NSInteger)rowCount;
+- (NSInteger)columnCount;
 
 @end
