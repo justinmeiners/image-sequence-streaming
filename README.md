@@ -8,7 +8,7 @@ Image sequences are animations composed from many individual images (frames). Th
 
 On mobile devices image sequences are a powerful tool for creating interactive content with outstanding visual quality. For example, creating a rotatable 3D product display:
 
-![car](https://raw.github.com/narpas/image-sequence-streaming/master/screenshots/screen_small.png)
+![car](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen_small.png)
 
 
 ### What is sequence streaming? ###
@@ -105,6 +105,6 @@ An optional **-nocompress** flag can be applied. This greatly increases filesize
 
 Due to Github's limit of 100mb per file, the quality of the sample animation included in this project has been limited. The original resolution was reduced from 1024x768 to 960x720 and every other frame was removed. In your own apps you can safely expect to display higher quality animations.
 
-![car1](https://raw.github.com/narpas/image-sequence-streaming/master/screenshots/screen1.png)
-![car2](https://raw.github.com/narpas/image-sequence-streaming/master/screenshots/screen2.png)
-![car3](https://raw.github.com/narpas/image-sequence-streaming/master/screenshots/screen3.png)
+![car1](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen1.png)
+![car2](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen2.png)
+![car3](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen3.png)
