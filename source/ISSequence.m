@@ -31,6 +31,11 @@
 {
     if ((self = [super init]))
     {
+        if (!filepath)
+        {
+            return nil;
+        }
+        
         _handle = ISSequenceStreamCreate([filepath cStringUsingEncoding:NSUTF8StringEncoding]);
         
         if (!_handle)
