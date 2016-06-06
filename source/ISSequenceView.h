@@ -120,7 +120,7 @@ typedef enum
 
 @property(nonatomic, assign)BOOL loops;
 @property(nonatomic, assign)NSRange range;
-@property(nonatomic, assign)float dragSensitivity;
+@property(nonatomic, assign)CGFloat dragSensitivity;
 @property(nonatomic, assign)ISSequenceDragDirection dragDirection;
 @property(nonatomic, assign)BOOL reverseDragDirection;
 @property(nonatomic, assign)id <ISSequenceDragViewDelegate> delegate;
@@ -132,7 +132,7 @@ typedef enum
                  loops:(BOOL)loops
                  range:(NSRange)range
          dragDirection:(ISSequenceDragDirection)dragDirection
-       dragSensitivity:(float)dragSensitivity /* 1.0 = a finger drags across the width view plays through the entire sequence. 2.0 half drag etc */
+       dragSensitivity:(CGFloat)dragSensitivity /* 1.0 = a finger drags across the width view plays through the entire sequence. 2.0 half drag etc */
               delegate:(id)delegate;
 
 @end

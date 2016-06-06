@@ -48,7 +48,7 @@
         
         _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(refreshDisplay:)];
         _displayLink.frameInterval = refreshInterval;
-        [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+        [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
     }
     return self;
 }
@@ -104,7 +104,7 @@
 - (void)shutdownOpenGL;
 
 
-- (void)update;
+- (BOOL)update;
 - (void)redraw;
 
 @end
@@ -122,7 +122,7 @@ gl_Position = a_vertex; \
 
 
 /* fragment shader for OpenGL */
-/* note the B - R swap in this shader - I wonder what the perfomance impacts are?*/
+/* note the B - R swap in this shader - I wonder what the perfomance impacts are? */
 static const char* const _kISSequenceViewFSH =
 "uniform lowp sampler2D u_image; \
 varying mediump vec2 v_uv; \
@@ -294,8 +294,10 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 - (void)refreshDisplay
 {
-    [self update];
-    [self redraw];
+    if ([self update])
+    {
+        [self redraw];
+    }
 }
 
 #pragma mark -
@@ -595,7 +597,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     }
     else
     {
-        for (int i = 0; i < _bufferCount; i ++)
+        for (int i = 0; i < _bufferCount; ++i)
         {
         }
         
@@ -603,8 +605,9 @@ static const GLfloat _kISSequenceViewUVs[] =
     }
 }
 
-- (void)update
+- (BOOL)update
 {
+    return YES;
 }
 
 - (void)redraw
@@ -644,7 +647,8 @@ static const GLfloat _kISSequenceViewUVs[] =
         _currentBuffer = 0;
     }
     
-    glViewport(0, 0, self.bounds.size.width, self.bounds.size.height);
+    CGFloat contentsScale = self.layer.contentsScale;
+    glViewport(0, 0, self.bounds.size.width * contentsScale, self.bounds.size.height * contentsScale);
         
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -736,19 +740,19 @@ static const GLfloat _kISSequenceViewUVs[] =
     return self;
 }
 
-- (void)update
+- (BOOL)update
 {
     if (_paused)
     {
-        return;
+        return NO;
     }
     
     if (_animationInterval != 0)
     {
         if (_animationTimer < _animationInterval)
         {
-            _animationTimer ++;
-            return;
+            ++_animationTimer;
+            return YES;
         }
         else
         {
@@ -774,19 +778,21 @@ static const GLfloat _kISSequenceViewUVs[] =
     {
         if (newFrame >= _range.location + _range.length)
         {
+            [self pause];
+
             if (_delegate && [_delegate respondsToSelector:@selector(sequencePlaybackViewFinishedPlayback:)])
             {
                 [_delegate sequencePlaybackViewFinishedPlayback:self];
             }
-            [self pause];
         }
         else if (newFrame < _range.location)
         {
+            [self pause];
+
             if (_delegate && [_delegate respondsToSelector:@selector(sequencePlaybackViewFinishedPlayback:)])
             {
                 [_delegate sequencePlaybackViewFinishedPlayback:self];
             }
-            [self pause];
         }
     }
     
@@ -794,6 +800,8 @@ static const GLfloat _kISSequenceViewUVs[] =
     {
         [self jumpToFrame:newFrame];
     }
+    
+    return YES;
 }
 
 - (void)setRange:(NSRange)range
@@ -858,7 +866,7 @@ static const GLfloat _kISSequenceViewUVs[] =
                  loops:(BOOL)loops
                  range:(NSRange)range
          dragDirection:(ISSequenceDragDirection)dragDirection
-       dragSensitivity:(float)dragSensitivity
+       dragSensitivity:(CGFloat)dragSensitivity
               delegate:(id)delegate
 {
     if (self = [super initWithSequence:sequence
@@ -909,7 +917,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     
     NSInteger newFrame = [self currentFrame];
     
-    float frameInterval = (self.bounds.size.width / (float)_range.length) / _dragSensitivity;
+    CGFloat frameInterval = (self.bounds.size.width / (CGFloat)_range.length) / _dragSensitivity;
 
     if (_dragDirection == kISSequnceDragDirectionHorizontal)
     {
@@ -1066,8 +1074,8 @@ static const GLfloat _kISSequenceViewUVs[] =
     
     CGPoint point = [[touches anyObject] locationInView:self];
     
-    float rowWidth = self.bounds.size.width / (float)_rowCount;
-    float columnHeight = self.bounds.size.height / (float)_columnCount;
+    CGFloat rowWidth = self.bounds.size.width / (CGFloat)_rowCount;
+    CGFloat columnHeight = self.bounds.size.height / (CGFloat)_columnCount;
     
     [self jumpToFrameAtRow:(int)floor(point.x / rowWidth) column:(int)floor(point.y / columnHeight)];
 }
@@ -1081,8 +1089,8 @@ static const GLfloat _kISSequenceViewUVs[] =
     
     CGPoint point = [[touches anyObject] locationInView:self];
     
-    float rowWidth = self.bounds.size.width / (float)_rowCount;
-    float columnHeight = self.bounds.size.height / (float)_columnCount;
+    CGFloat rowWidth = self.bounds.size.width / (CGFloat)_rowCount;
+    CGFloat columnHeight = self.bounds.size.height / (CGFloat)_columnCount;
     
     [self jumpToFrameAtRow:(int)floor(point.x / rowWidth) column:(int)floor(point.y / columnHeight)];
 }
