@@ -157,8 +157,8 @@ int main(int argc, const char * argv[])
             
             if (compressData)
             {
-                outlength = LZ4_compress(rawData, outbuffer, (int)buffSize);
-                printf("%f%% of raw size\n", outlength / (float)buffSize);
+                outlength = LZ4_compress_default(rawData, outbuffer, (int)buffSize, (int)buffSize);
+                printf("%f%% of raw size\n", (outlength / (float)buffSize) * 100.0f);
             }
             else
             {

@@ -122,7 +122,8 @@ void ISSequenceStreamCopyFrame (ISSequenceStreamRef sequence, int frameNumber, c
     {
         fread(sequence->_readBuffer, sequence->_frameInfos[frameNumber]._length, 1, sequence->_filePtr);
         unsigned int outlength = (unsigned int)sequence->_frameSize;
-        LZ4_uncompress(sequence->_readBuffer, buffer, outlength);
+        
+        LZ4_decompress_safe(sequence->_readBuffer, buffer, sequence->_frameInfos[frameNumber]._length, outlength);
     }
     else
     {
