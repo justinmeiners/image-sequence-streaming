@@ -1,9 +1,5 @@
-/*
- By: Justin Meiners
- 
- Copyright (c) 2015 Justin Meiners
- Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
- */
+/* Create By: Justin Meiners */
+
 #import "ViewController.h"
 #import "ISSequenceView.h"
 
@@ -22,8 +18,6 @@
     
     
     _sequenceView = [[ISSequenceDragView alloc] initWithSequence:sequence
-                                                refreshInterval:1
-                                                useTextureCache:YES
                                                           loops:true
                                                           range:[sequence range]
                                                   dragDirection:kISSequnceDragDirectionHorizontal
@@ -32,6 +26,17 @@
     
     _sequenceView.reverseDragDirection = false;
     [self.view addSubview:_sequenceView];
+    
+    
+    /*
+    _sequenceView = [[ISSequencePlaybackView alloc] initWithSequence:sequence
+                                                               loops:YES
+                                                               range:[sequence range]
+                                                   playbackDirection:kISSequencePlaybackDirectionForward
+                                                            delegate:nil];
+    [self.view addSubview:_sequenceView];
+     */
+    
     
     _sequenceView.frame = self.view.bounds;
     

@@ -1,9 +1,4 @@
-/*
- By: Justin Meiners
- 
- Copyright (c) 2015 Justin Meiners
- Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
- */
+/* Create By: Justin Meiners */
 
 #ifndef IS_SEQUENCE_INFO_H
 #define IS_SEQUENCE_INFO_H
@@ -14,28 +9,26 @@
 extern "C" {
 #endif
     
+#define IS_SEQUENCE_VERSION 2
 #define IS_SEQUENCE_SIGNATURE 0x320
     
-#define IS_SEQUENCE_COMPRESSION 1
-#define IS_SEQUENCE_NO_COMPRESSION 0
+#define IS_SEQUENCE_FORMAT_JPG 2
     
     /* both of these structures should be tightly packed with no alignment padding */
     typedef struct
     {
-        int32_t _signature;
-        uint32_t _compression;
-        uint32_t _frameCount;
-        uint16_t _width;
-        uint16_t _height;
-        uint32_t _bytesPerRow;
-        
-    } ISSequenceInfo_t;
+        uint32_t signature;
+        uint32_t version;
+        uint32_t format;
+        uint32_t frameCount;
+        uint16_t width;
+        uint16_t height;
+    } ISSequenceHeader_t;
     
     typedef struct
     {
-        uint32_t _position;
-        uint32_t _length;
-        
+        uint32_t position;
+        uint32_t length;
     } ISSequenceFrameInfo_t;
     
     

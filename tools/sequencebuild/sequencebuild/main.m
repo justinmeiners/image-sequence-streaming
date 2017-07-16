@@ -1,12 +1,8 @@
-/*
- Copyright (c) 2015 Justin Meiners
- Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
- */
+/* Create By: Justin Meiners */
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import "ISSequenceInfo.h"
-#import "lz4.h"
 
 int main(int argc, const char * argv[])
 {
@@ -14,23 +10,12 @@ int main(int argc, const char * argv[])
         
         if (argc < 3)
         {
-            printf("sequencebuild (-nocompress) [input_dir] [output_file]\n");
+            printf("sequencebuild [input_dir] [output_file]\n");
             return EXIT_FAILURE;
         }
         
-        BOOL compressData = YES;
-        
-        int i;
-        for (i = 1; i < argc - 2; i++)
-        {
-            if (strcmp(argv[i], "-nocompress") == 0)
-            {
-                compressData = NO;
-            }
-        }
-        
-        NSString* inputPath = [NSString stringWithCString:argv[i] encoding:NSUTF8StringEncoding];
-        NSString* outputPath = [NSString stringWithCString:argv[i + 1] encoding:NSUTF8StringEncoding];
+        NSString* inputPath = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
+        NSString* outputPath = [NSString stringWithCString:argv[2] encoding:NSUTF8StringEncoding];
         
         if (!inputPath || !outputPath)
         {
@@ -61,117 +46,83 @@ int main(int argc, const char * argv[])
         
         for (NSString* input in inputs)
         {
-            if ([[[input pathExtension] lowercaseString] isEqualToString:@"png"])
+            if ([[[input pathExtension] lowercaseString] isEqualToString:@"jpg"])
             {
                 [sequenceInputs addObject:input];
             }
         }
+        [sequenceInputs sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         
         int frameCount = (int)[sequenceInputs count];
         
         ISSequenceFrameInfo_t* frameInfos = malloc(sizeof(ISSequenceFrameInfo_t) * frameCount);
         
-        ISSequenceInfo_t info;
-        info._signature = IS_SEQUENCE_SIGNATURE;
-        info._frameCount = (uint32_t)frameCount;
-        
-        if (compressData)
-        {
-            info._compression = IS_SEQUENCE_COMPRESSION;
-        }
-        else
-        {
-            info._compression = IS_SEQUENCE_NO_COMPRESSION;
-        }
+        ISSequenceHeader_t header;
+        header.signature = IS_SEQUENCE_SIGNATURE;
+        header.version = IS_SEQUENCE_VERSION;
+        header.frameCount = (uint32_t)frameCount;
+        header.format = IS_SEQUENCE_FORMAT_JPG;
         
         unsigned long infoFilePosition = 0;
         
         BOOL infoSelected = NO;
         
-        for (i = 0; i < frameCount; i ++)
+        for (int i = 0; i < frameCount; i ++)
         {
-            printf("processing: %s\n", [[sequenceInputs objectAtIndex:i] UTF8String]);
+            printf("%s\n", [[sequenceInputs objectAtIndex:i] UTF8String]);
             
             NSString* fullInputPath = [inputPath stringByAppendingPathComponent:[sequenceInputs objectAtIndex:i]];
             
-            CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData((CFDataRef)[NSData dataWithContentsOfFile:fullInputPath]);
-            CGImageRef image = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, YES, kCGRenderingIntentDefault);
+            
+            NSData* rawImageData = [NSData dataWithContentsOfFile:fullInputPath];
+            
+            CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData((CFDataRef)rawImageData);
+            CGImageRef image = CGImageCreateWithJPEGDataProvider(imgDataProvider, NULL, YES, kCGRenderingIntentDefault);
             
             NSUInteger imageWidth = CGImageGetWidth(image);
             NSUInteger imageHeight = CGImageGetHeight(image);
             
-            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            printf("  w: %i h: %i\n", (int)imageWidth, (int)imageHeight);
+
             
-            size_t buffSize = imageHeight * imageWidth * 4 * sizeof(char);
-            
-            char* rawData = (char*)malloc(buffSize);
-            memset(rawData, 0x0, buffSize);
-            char* outbuffer = (char*)malloc(buffSize);
-            
-            NSUInteger bytesPerPixel = 4;
-            NSUInteger bytesPerRow = bytesPerPixel * imageWidth;
-            NSUInteger bitsPerComponent = 8;
-            CGContextRef context = CGBitmapContextCreate(rawData,
-                                                         imageWidth,
-                                                         imageHeight,
-                                                         bitsPerComponent, bytesPerRow, colorSpace,
-                                                         kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-            
-            CGColorSpaceRelease(colorSpace);
-            CGContextDrawImage(context, CGRectMake(0, 0, imageWidth, imageHeight), image);
-            CGContextRelease(context);
             CGImageRelease(image);
-            CGDataProviderRelease(imgDataProvider);
             
             if (!infoSelected)
             {
-                info._width = (uint16_t)imageWidth;
-                info._height = (uint16_t)imageHeight;
-                info._bytesPerRow = (uint32_t)bytesPerRow;
+                header.width = (uint16_t)imageWidth;
+                header.height = (uint16_t)imageHeight;
                 
-                printf("width: %i\n", (int)imageWidth);
-                printf("height: %i\n", (int)imageHeight);
-                printf("bytes per row: %i\n", (int)bytesPerRow);
-                
+
                 /* write file header */
-                fwrite(&info, sizeof(ISSequenceInfo_t), 1, outputFile);
+                fwrite(&header, sizeof(ISSequenceHeader_t), 1, outputFile);
                 
                 infoFilePosition = ftell(outputFile);
                 
-                /* write frame info which we will overwrite later */
+                /* write incomplete frame info which we will overwrite later */
                 fwrite(frameInfos, sizeof(ISSequenceFrameInfo_t), frameCount, outputFile);
                 
                 infoSelected = YES;
             }
             else
             {
-                if (imageWidth != info._width ||
-                    imageHeight != info._height)
+                if (imageWidth != header.width ||
+                    imageHeight != header.height)
                 {
                     printf("images do not match in size\n");
                     return EXIT_FAILURE;
                 }
             }
+
+            size_t imageLength = [rawImageData length];
             
-            size_t outlength = buffSize;
+            frameInfos[i].position = (uint32_t)ftell(outputFile);
+            frameInfos[i].length = (uint32_t)imageLength;
             
-            if (compressData)
-            {
-                outlength = LZ4_compress_default(rawData, outbuffer, (int)buffSize, (int)buffSize);
-                printf("%f%% of raw size\n", (outlength / (float)buffSize) * 100.0f);
-            }
-            else
-            {
-                memcpy(outbuffer, rawData, buffSize);
-            }
+            printf("  offest: %i, size %i\n", frameInfos[i].position, frameInfos[i].length);
             
-            frameInfos[i]._position = (uint32_t)ftell(outputFile);
-            frameInfos[i]._length = (uint32_t)outlength;
+            fwrite([rawImageData bytes], imageLength, 1, outputFile);
             
-            fwrite(outbuffer, outlength, 1, outputFile);
-            
-            free(rawData);
-            free(outbuffer);
+            [rawImageData release];
         }
         
         /* seek back to the beginning, write file info */

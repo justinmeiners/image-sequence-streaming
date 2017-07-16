@@ -1,25 +1,18 @@
-/*
- By: Justin Meiners
- 
- Copyright (c) 2015 Justin Meiners
- Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
- */
+/* Create By: Justin Meiners */
 
 #include "ISSequenceStream.h"
 #include <stdlib.h>
 #include <memory.h>
 #include <assert.h>
-#include "lz4.h"
+#include <ImageIO/ImageIO.h>
 
 struct ISSequenceStream
 {
-    ISSequenceInfo_t _info;
-    ISSequenceFrameInfo_t* _frameInfos;
-    char* _readBuffer;
-    uint32_t _position;
-    
-    FILE* _filePtr;
-    size_t _frameSize;
+    ISSequenceHeader_t header;
+    ISSequenceFrameInfo_t* frameInfos;
+    uint32_t position;
+    FILE* filePtr;
+    CFDictionaryRef imageSourceDict;
 };
 
 
@@ -44,43 +37,33 @@ ISSequenceStreamRef ISSequenceStreamCreate (const char* filePath)
         return NULL;
     }
     
-    fread(&sequence->_info, sizeof(ISSequenceInfo_t), 1, file);
+    fread(&sequence->header, sizeof(ISSequenceHeader_t), 1, file);
     
-    if (sequence->_info._signature != IS_SEQUENCE_SIGNATURE)
+    if (sequence->header.signature != IS_SEQUENCE_SIGNATURE)
     {
         free(sequence);
         fclose(file);
         return NULL;
     }
     
-    sequence->_frameInfos = malloc(sizeof(ISSequenceFrameInfo_t) * sequence->_info._frameCount);
+    sequence->frameInfos = malloc(sizeof(ISSequenceFrameInfo_t) * sequence->header.frameCount);
     
-    if (!sequence->_frameInfos)
+    if (!sequence->frameInfos)
     {
         free(sequence);
         fclose(file);
         return NULL;
     }
     
-    fread(sequence->_frameInfos, sizeof(ISSequenceFrameInfo_t), sequence->_info._frameCount, file);
+    fread(sequence->frameInfos, sizeof(ISSequenceFrameInfo_t), sequence->header.frameCount, file);
     
-    sequence->_frameSize = sequence->_info._height * sequence->_info._bytesPerRow;
+    sequence->filePtr = file;
+    sequence->position = 0;
     
-    sequence->_filePtr = file;
+    const void* keys[] = { kCGImageSourceShouldCache };
+    const void* values[] = { kCFBooleanFalse };
     
-    if (sequence->_info._compression == IS_SEQUENCE_COMPRESSION)
-    {
-        sequence->_readBuffer = malloc(sequence->_frameSize);
-        
-        if (!sequence->_readBuffer)
-        {
-            free(sequence);
-            fclose(file);
-            return NULL;
-        }
-    }
-    
-    sequence->_position = 0;
+    sequence->imageSourceDict = CFDictionaryCreate(NULL, keys, values, 1, NULL, NULL);
 
     return sequence;
 }
@@ -89,23 +72,19 @@ void ISSequenceStreamDestroy (ISSequenceStreamRef sequence)
 {
     if (sequence)
     {
-        if (sequence->_filePtr)
+        if (sequence->filePtr)
         {
-            fclose(sequence->_filePtr);
-            sequence->_filePtr = NULL;
+            fclose(sequence->filePtr);
+            sequence->filePtr = NULL;
         }
         
-        if (sequence->_readBuffer)
+        if (sequence->frameInfos)
         {
-            free(sequence->_readBuffer);
-            sequence->_readBuffer = NULL;
+            free(sequence->frameInfos);
+            sequence->frameInfos = NULL;
         }
         
-        if (sequence->_frameInfos)
-        {
-            free(sequence->_frameInfos);
-            sequence->_frameInfos = NULL;
-        }
+        CFRelease(sequence->imageSourceDict);
         
         free(sequence);
     }
@@ -114,44 +93,43 @@ void ISSequenceStreamDestroy (ISSequenceStreamRef sequence)
 void ISSequenceStreamCopyFrame (ISSequenceStreamRef sequence, int frameNumber, char* buffer)
 {
     assert(sequence);
-    assert(frameNumber >= 0 && frameNumber < sequence->_info._frameCount);
+    assert(frameNumber >= 0 && frameNumber < sequence->header.frameCount);
     
-    fseek(sequence->_filePtr, sequence->_frameInfos[frameNumber]._position, SEEK_SET);
+    int offset = sequence->frameInfos[frameNumber].position;
+    int length = sequence->frameInfos[frameNumber].length;
     
-    if (sequence->_info._compression == IS_SEQUENCE_COMPRESSION)
-    {
-        fread(sequence->_readBuffer, sequence->_frameInfos[frameNumber]._length, 1, sequence->_filePtr);
-        unsigned int outlength = (unsigned int)sequence->_frameSize;
+    fseek(sequence->filePtr, offset, SEEK_SET);
+    fread(buffer, length, 1, sequence->filePtr);
         
-        LZ4_decompress_safe(sequence->_readBuffer, buffer, sequence->_frameInfos[frameNumber]._length, outlength);
-    }
-    else
-    {
-        fread(buffer, sequence->_frameInfos[frameNumber]._length, 1, sequence->_filePtr);
-    }
+    CFDataRef dataRef = CFDataCreateWithBytesNoCopy(NULL, (UInt8*)buffer, length, NULL);
+    CGImageSourceRef imageSource = CGImageSourceCreateWithData(dataRef, sequence->imageSourceDict);
+    
+    CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+    
+    CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
+    CFDataGetBytes(rawData, CFRangeMake(0, CFDataGetLength(rawData)), (UInt8*)buffer);
+    
+    CGImageRelease(image);
+    CFRelease(rawData);
+    CFRelease(imageSource);
 }
 
 uint32_t ISSequenceStreamFrameCount (ISSequenceStreamRef sequence)
 {
     assert(sequence);
-    return sequence->_info._frameCount;
+    return sequence->header.frameCount;
 }
 
 uint32_t ISSequenceStreamWidth (ISSequenceStreamRef sequence)
 {
     assert(sequence);
-    return sequence->_info._width;
+    return sequence->header.width;
 }
 
 uint32_t ISSequenceStreamHeight (ISSequenceStreamRef sequence)
 {
     assert(sequence);
-    return sequence->_info._height;
+    return sequence->header.height;
 }
 
-size_t ISSequenceStreamFrameSize (ISSequenceStreamRef sequence)
-{
-    assert(sequence);
-    return sequence->_frameSize;
-}
 

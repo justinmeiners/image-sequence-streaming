@@ -1,9 +1,5 @@
-/*
- By: Justin Meiners
- 
- Copyright (c) 2015 Justin Meiners
- Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
- */
+/* Create By: Justin Meiners */
+
 #import <OpenGLES/ES2/glext.h>
 #import <OpenGLES/ES2/gl.h>
 #import "ISSequenceView.h"
@@ -13,7 +9,6 @@
 
 #pragma mark -
 #pragma mark ISSequenceView
-#pragma mark -
 
 /* This is a seperate proxy class so as to avoid retain cycles
  For some reason display links retain their targets.. */
@@ -116,8 +111,8 @@ attribute mediump vec2 a_uv; \
 varying mediump vec2 v_uv; \
 void main() \
 { \
-v_uv = a_uv; \
-gl_Position = a_vertex; \
+    v_uv = a_uv; \
+    gl_Position = a_vertex; \
 }";
 
 
@@ -128,8 +123,8 @@ static const char* const _kISSequenceViewFSH =
 varying mediump vec2 v_uv; \
 void main() \
 { \
-lowp vec4 color = texture2D(u_image, v_uv); \
-gl_FragColor = vec4(color.b, color.g, color.r, color.a); \
+    lowp vec3 color = texture2D(u_image, v_uv).xyz; \
+    gl_FragColor = vec4(color.b, color.g, color.r, 1.0); \
 }";
 
 
@@ -172,11 +167,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     assert(sequence);
     self = [super initWithFrame:CGRectMake(0, 0, [sequence width], [sequence height])];
     if (self)
-    {
-        self.opaque = NO;
-        self.backgroundColor = [UIColor clearColor];
-        self.layer.opaque = NO;
-        
+    {        
         // Setup OpenGL ES context
         CAEAGLLayer* eaglLayer = (CAEAGLLayer *)self.layer;
 		
@@ -199,7 +190,7 @@ static const GLfloat _kISSequenceViewUVs[] =
          2 seems to work nicely, you shouldn't need to change this - but if you see weird pixelly artifacts
          you may want to increase this number to 3 or 4. Increasing buffer count will increase RAM usage.
          */
-        _bufferCount = 2;
+        _bufferCount = kISSequnceViewBufferCount;
         
         _currentBuffer = 0;
         _framebuffer = 0;
@@ -227,10 +218,18 @@ static const GLfloat _kISSequenceViewUVs[] =
         [self setupPixelbuffers];
         [self setupTextureBuffers];
         
-        
         _displayLink = [[_ISSequenceDisplayLink alloc] initWithTarget:self action:@selector(refreshDisplay) refreshInterval:_refreshInterval];
         
         [self redraw];
+    }
+    return self;
+}
+
+- (id)initWithSequence:(ISSequence*)sequence
+{
+    if (self = [self initWithSequence:sequence refreshInterval:2 useTextureCache:YES])
+    {
+        
     }
     return self;
 }
@@ -249,9 +248,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     [self shutdownFramebuffers];
 }
 
-#pragma mark -
 #pragma mark Public
-#pragma mark -
 
 - (void)jumpToFrame:(NSInteger)frame
 {
@@ -269,9 +266,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 }
 
 
-#pragma mark -
 #pragma mark Setters And Getters
-#pragma mark -
 
 - (ISSequence*)sequence
 {
@@ -288,9 +283,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     return _refreshInterval;
 }
 
-#pragma mark -
 #pragma mark Private
-#pragma mark -
 
 - (void)refreshDisplay
 {
@@ -300,9 +293,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     }
 }
 
-#pragma mark -
 #pragma mark Pixel Buffer/OpenGL
-#pragma mark -
 
 - (void)setupFramebuffers
 {
@@ -401,6 +392,9 @@ static const GLfloat _kISSequenceViewUVs[] =
 - (void)setupOpenGL
 {
     [EAGLContext setCurrentContext:_context];
+    
+    glDisable(GL_BLEND);
+    glDepthMask(GL_FALSE);
     
     GLuint vertShader, fragShader;
     
@@ -625,14 +619,16 @@ static const GLfloat _kISSequenceViewUVs[] =
     if (!_useTextureCache)
     {
         glBindTexture(GL_TEXTURE_2D, _simulatorTextures[_currentBuffer]);
-                        
+        
+        
         glTexSubImage2D(GL_TEXTURE_2D,
                         0,
                         0,
                         0,
                         [_sequence width],
                         [_sequence height],
-                        GL_BGRA, GL_UNSIGNED_BYTE,
+                        GL_BGRA,
+                        GL_UNSIGNED_BYTE,
                         CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]));
     }
     
@@ -640,18 +636,18 @@ static const GLfloat _kISSequenceViewUVs[] =
     CVPixelBufferUnlockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
     
     /* prepare next frames buffer index */
-    _currentBuffer ++;
+    ++_currentBuffer;
     
     if (_currentBuffer >= _bufferCount)
     {
         _currentBuffer = 0;
     }
     
+    glClear(GL_COLOR_BUFFER_BIT);
+    
     CGFloat contentsScale = self.layer.contentsScale;
     glViewport(0, 0, self.bounds.size.width * contentsScale, self.bounds.size.height * contentsScale);
         
-    glClear(GL_COLOR_BUFFER_BIT);
-    
     if (_useTextureCache)
     {
         CVOpenGLESTextureCacheFlush(_textureCache, 0); /* it is not clear what the flush does.. */
@@ -700,7 +696,6 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 #pragma mark -
 #pragma mark ISSequencePlaybackView
-#pragma mark -
 
 @interface ISSequencePlaybackView ()
 {
@@ -737,6 +732,26 @@ static const GLfloat _kISSequenceViewUVs[] =
         _playbackDirection = direction;
         _delegate = delegate;
     }
+    return self;
+}
+
+- (id)initWithSequence:(ISSequence*)sequence
+                 loops:(BOOL)loops
+                 range:(NSRange)range
+     playbackDirection:(ISSequencePlaybackDirection)direction
+              delegate:(id<ISSequencePlaybackViewDelegate>)delegate
+{
+    if (self = [self initWithSequence:sequence
+                      refreshInterval:kISSequnceViewRefreshIntervalDefault
+                      useTextureCache:YES
+                                loops:loops
+                                range:range
+                    playbackDirection:direction
+                             delegate:delegate])
+    {
+        
+    }
+    
     return self;
 }
 
@@ -838,10 +853,8 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 @end
 
-
 #pragma mark -
 #pragma mark ISSequenceDragView
-#pragma mark -
 
 @interface ISSequenceDragView ()
 {
@@ -859,6 +872,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 @synthesize reverseDragDirection = _reverseDragDirection;
 @synthesize delegate = _delegate;
 @synthesize dragging = _dragging;
+
 
 - (id)initWithSequence:(ISSequence*)sequence
        refreshInterval:(NSInteger)interval
@@ -882,6 +896,28 @@ static const GLfloat _kISSequenceViewUVs[] =
         
         _reverseDragDirection = NO;
         [self setRange:range];
+    }
+    
+    return self;
+}
+
+- (id)initWithSequence:(ISSequence*)sequence
+                 loops:(BOOL)loops
+                 range:(NSRange)range
+         dragDirection:(ISSequenceDragDirection)dragDirection
+       dragSensitivity:(CGFloat)dragSensitivity
+              delegate:(id)delegate
+{
+    if (self = [self initWithSequence:sequence
+                      refreshInterval:kISSequnceViewRefreshIntervalDefault
+                      useTextureCache:YES
+                                loops:loops
+                                range:range
+                        dragDirection:dragDirection
+                      dragSensitivity:dragSensitivity
+                             delegate:delegate])
+    {
+        
     }
     
     return self;
@@ -1011,8 +1047,6 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 #pragma mark -
 #pragma mark ISSequenceGridView
-#pragma mark -
-
 
 @implementation ISSequenceGridView
 @synthesize touchEnabled = _touchEnabled;
@@ -1034,6 +1068,24 @@ static const GLfloat _kISSequenceViewUVs[] =
         self.range = range;
         
     }
+    return self;
+}
+
+- (id)initWithSequence:(ISSequence*)sequence
+                 range:(NSRange)range
+          framesPerRow:(NSInteger)rowCount
+          touchEnabled:(NSInteger)touchEnabled
+{
+    if (self = [self initWithSequence:sequence
+                      refreshInterval:kISSequnceViewRefreshIntervalDefault
+                      useTextureCache:YES
+                                range:range
+                         framesPerRow:rowCount
+                        touchEnabled:touchEnabled])
+    {
+        
+    }
+    
     return self;
 }
 

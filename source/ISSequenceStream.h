@@ -1,9 +1,4 @@
-/*
- By: Justin Meiners
- 
- Copyright (c) 2015 Justin Meiners
- Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
- */
+/* Create By: Justin Meiners */
 
 #ifndef IS_SEQUENCE_H
 #define IS_SEQUENCE_H
@@ -25,7 +20,6 @@ extern void ISSequenceStreamCopyFrame (ISSequenceStreamRef sequence, int frameNu
 extern uint32_t ISSequenceStreamFrameCount (ISSequenceStreamRef sequence);
 extern uint32_t ISSequenceStreamWidth (ISSequenceStreamRef sequence);
 extern uint32_t ISSequenceStreamHeight (ISSequenceStreamRef sequence);
-extern size_t ISSequenceStreamFrameSize (ISSequenceStreamRef sequence);
 
 #ifdef __cplusplus
 }

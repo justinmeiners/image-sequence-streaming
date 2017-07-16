@@ -1,9 +1,4 @@
-/*
- By: Justin Meiners
- 
- Copyright (c) 2015 Justin Meiners
- Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
- */
+/* Create By: Justin Meiners */
 
 #import <UIKit/UIKit.h>
 #import "ISSequence.h"
@@ -14,10 +9,10 @@
 
 
 /* the view will refresh drawing once every screen refresh */
-#define kISSequnceViewRefreshIntervalDefault 1
+#define kISSequnceViewRefreshIntervalDefault 2
 
 /* if you see any artifacts try double or triple buffering */
-#define kISSequnceViewBuffersDefault 1
+#define kISSequnceViewBufferCount 2
 
 
 /* 
@@ -37,10 +32,11 @@
  upload speeds. It currently is not available on the simulator and will force to false. */
 
 
-
 - (id)initWithSequence:(ISSequence*)sequence
        refreshInterval:(NSInteger)interval
        useTextureCache:(bool)textureCache;
+
+- (id)initWithSequence:(ISSequence*)sequence;
 
 - (void)jumpToFrame:(NSInteger)frame;
 
@@ -89,6 +85,13 @@ typedef enum
      playbackDirection:(ISSequencePlaybackDirection)direction
               delegate:(id<ISSequencePlaybackViewDelegate>)delegate;
 
+- (id)initWithSequence:(ISSequence*)sequence
+                 loops:(BOOL)loops
+                 range:(NSRange)range
+     playbackDirection:(ISSequencePlaybackDirection)direction
+              delegate:(id<ISSequencePlaybackViewDelegate>)delegate;
+
+
 
 - (void)pause;
 - (void)resume;
@@ -128,12 +131,20 @@ typedef enum
 
 - (id)initWithSequence:(ISSequence*)sequence
        refreshInterval:(NSInteger)interval
-       useTextureCache:(bool)textureCache
+       useTextureCache:(BOOL)textureCache
                  loops:(BOOL)loops
                  range:(NSRange)range
          dragDirection:(ISSequenceDragDirection)dragDirection
        dragSensitivity:(CGFloat)dragSensitivity /* 1.0 = a finger drags across the width view plays through the entire sequence. 2.0 half drag etc */
               delegate:(id)delegate;
+
+- (id)initWithSequence:(ISSequence*)sequence
+                 loops:(BOOL)loops
+                 range:(NSRange)range
+         dragDirection:(ISSequenceDragDirection)dragDirection
+       dragSensitivity:(CGFloat)dragSensitivity /* 1.0 = a finger drags across the width view plays through the entire sequence. 2.0 half drag etc */
+              delegate:(id)delegate;
+
 
 @end
 
@@ -154,6 +165,11 @@ typedef enum
 - (id)initWithSequence:(ISSequence*)sequence
        refreshInterval:(NSInteger)interval
        useTextureCache:(BOOL)textureCache
+                 range:(NSRange)range
+          framesPerRow:(NSInteger)rowCount
+          touchEnabled:(NSInteger)touchEnabled;
+
+- (id)initWithSequence:(ISSequence*)sequence
                  range:(NSRange)range
           framesPerRow:(NSInteger)rowCount
           touchEnabled:(NSInteger)touchEnabled;

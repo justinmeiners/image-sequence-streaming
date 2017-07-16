@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		F4FBFBC1178341A400E2D1BD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FBFBC0178341A400E2D1BD /* main.m */; };
 		F4FBFBCC1783422C00E2D1BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4FBFBCB1783422C00E2D1BD /* Foundation.framework */; };
-		F4FBFBD11783477400E2D1BD /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = F4FBFBCF1783477400E2D1BD /* lz4.c */; };
 		F4FBFBD31783486C00E2D1BD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4FBFBD21783486C00E2D1BD /* CoreGraphics.framework */; };
 		F4FBFBD517834E3E00E2D1BD /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4FBFBD417834E3E00E2D1BD /* ApplicationServices.framework */; };
 		F4FBFBD91783533400E2D1BD /* sequencebuild in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4FBFBBA178341A400E2D1BD /* sequencebuild */; };
@@ -33,8 +32,6 @@
 		F4FBFBC0178341A400E2D1BD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F4FBFBCB1783422C00E2D1BD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F4FBFBCE1783477400E2D1BD /* ISSequenceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ISSequenceInfo.h; path = ../../source/ISSequenceInfo.h; sourceTree = "<group>"; };
-		F4FBFBCF1783477400E2D1BD /* lz4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4.c; path = ../../source/lz4.c; sourceTree = "<group>"; };
-		F4FBFBD01783477400E2D1BD /* lz4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4.h; path = ../../source/lz4.h; sourceTree = "<group>"; };
 		F4FBFBD21783486C00E2D1BD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F4FBFBD417834E3E00E2D1BD /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -93,8 +90,6 @@
 			isa = PBXGroup;
 			children = (
 				F4FBFBCE1783477400E2D1BD /* ISSequenceInfo.h */,
-				F4FBFBCF1783477400E2D1BD /* lz4.c */,
-				F4FBFBD01783477400E2D1BD /* lz4.h */,
 			);
 			name = ISSequence;
 			sourceTree = "<group>";
@@ -151,7 +146,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4FBFBC1178341A400E2D1BD /* main.m in Sources */,
-				F4FBFBD11783477400E2D1BD /* lz4.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
