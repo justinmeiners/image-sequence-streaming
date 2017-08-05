@@ -8,7 +8,7 @@ Image sequences are very similar video files, but are designed to be accessed ra
 
 On mobile devices image sequences are a powerful tool for creating interactive content with outstanding visual quality. For example, creating a rotatable 3D product display:
 
-![car](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen_small.jpg)
+![car image sequence](screenshots/screen_small.jpg)
 
 
 ## What is sequence streaming?
@@ -99,9 +99,9 @@ ISSequenceGridView* view = [[ISSequenceGridView alloc] initWithSequence:sequence
 
 Due to filesize the resolution of the sample animation included in this project has been limited. The original resolution was reduced from 1024x768 to 960x720 and every other frame was removed. In your own apps you can safely expect to display higher quality animations.
 
-![car1](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen1.jpg)
-![car2](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen2.jpg)
-![car3](https://raw.github.com/justinmeiners/image-sequence-streaming/master/screenshots/screen3.jpg)
+![car1](screenshots/screen1.jpg)
+![car2](screenshots/screen2.jpg)
+![car3](screenshots/screen3.jpg)
 
 ## Project License
 
