@@ -39,9 +39,14 @@
         _startFrame = startFrame;
         _frameCount = count;
         
+        const void* keys[] = { kCGImageSourceShouldCache };
+        const void* values[] = { kCFBooleanFalse };
+        
+        _imageSourceOptions = CFDictionaryCreate(nil, keys, values, 1, nil, nil);
+        
         NSURL* url = [self frameUrl:0];
         
-        CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef)url, nil);
+        CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef)url, _imageSourceOptions);
         if (!imageSource) return nil;
         
         CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil);
@@ -59,11 +64,6 @@
         
         CGImageRelease(image);
         CFRelease(imageSource);
-        
-        const void* keys[] = { kCGImageSourceShouldCache };
-        const void* values[] = { kCFBooleanFalse };
-        
-        _imageSourceOptions = CFDictionaryCreate(nil, keys, values, 1, nil, nil);
     }
     return self;
 }
