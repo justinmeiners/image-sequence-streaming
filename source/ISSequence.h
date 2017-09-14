@@ -26,6 +26,7 @@ typedef struct
 
 @interface ISSequence : NSObject
 
+// cannot be allocated directly. You must use one of the following constructor methods
 // for sequences compiled into a single file
 + (ISSequence*)sequenceNamed:(NSString*)name;
 + (ISSequence*)sequenceFromFilepath:(NSString*)filepath;

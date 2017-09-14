@@ -3,6 +3,7 @@
 #import "ISSequence.h"
 #include <ImageIO/ImageIO.h>
 
+// class cluster design
 @interface ISPrefixSequence : ISSequence
 {
     NSInteger _startFrame;
