@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D056FA501F1B1A15000F0BAD /* car.seq in Resources */ = {isa = PBXBuildFile; fileRef = D056FA4F1F1B1A15000F0BAD /* car.seq */; };
+		D0AE7A561F6AFD5B00249D03 /* source in Resources */ = {isa = PBXBuildFile; fileRef = D0AE7A551F6AFD5B00249D03 /* source */; };
 		D0EA40911B8D5B8C00EAF8F7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EA40901B8D5B8C00EAF8F7 /* main.m */; };
 		D0EA40941B8D5B8C00EAF8F7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EA40931B8D5B8C00EAF8F7 /* AppDelegate.m */; };
 		D0EA40971B8D5B8C00EAF8F7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EA40961B8D5B8C00EAF8F7 /* ViewController.m */; };
@@ -15,12 +16,12 @@
 		D0EA409C1B8D5B8C00EAF8F7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0EA409B1B8D5B8C00EAF8F7 /* Images.xcassets */; };
 		D0EA409F1B8D5B8C00EAF8F7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0EA409D1B8D5B8C00EAF8F7 /* LaunchScreen.xib */; };
 		D0EA40BE1B8D5BAD00EAF8F7 /* ISSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EA40B61B8D5BAD00EAF8F7 /* ISSequence.m */; };
-		D0EA40BF1B8D5BAD00EAF8F7 /* ISSequenceStream.c in Sources */ = {isa = PBXBuildFile; fileRef = D0EA40B81B8D5BAD00EAF8F7 /* ISSequenceStream.c */; };
 		D0EA40C01B8D5BAD00EAF8F7 /* ISSequenceView.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EA40BB1B8D5BAD00EAF8F7 /* ISSequenceView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D056FA4F1F1B1A15000F0BAD /* car.seq */ = {isa = PBXFileReference; lastKnownFileType = file; name = car.seq; path = ../../data/car.seq; sourceTree = "<group>"; };
+		D0AE7A551F6AFD5B00249D03 /* source */ = {isa = PBXFileReference; lastKnownFileType = folder; name = source; path = ../../data/source; sourceTree = "<group>"; };
 		D0EA408B1B8D5B8C00EAF8F7 /* ImageSequence.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageSequence.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0EA408F1B8D5B8C00EAF8F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0EA40901B8D5B8C00EAF8F7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -33,9 +34,6 @@
 		D0EA409E1B8D5B8C00EAF8F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		D0EA40B51B8D5BAD00EAF8F7 /* ISSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISSequence.h; sourceTree = "<group>"; };
 		D0EA40B61B8D5BAD00EAF8F7 /* ISSequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISSequence.m; sourceTree = "<group>"; };
-		D0EA40B71B8D5BAD00EAF8F7 /* ISSequenceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISSequenceInfo.h; sourceTree = "<group>"; };
-		D0EA40B81B8D5BAD00EAF8F7 /* ISSequenceStream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ISSequenceStream.c; sourceTree = "<group>"; };
-		D0EA40B91B8D5BAD00EAF8F7 /* ISSequenceStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISSequenceStream.h; sourceTree = "<group>"; };
 		D0EA40BA1B8D5BAD00EAF8F7 /* ISSequenceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISSequenceView.h; sourceTree = "<group>"; };
 		D0EA40BB1B8D5BAD00EAF8F7 /* ISSequenceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISSequenceView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +71,7 @@
 				D0EA40B41B8D5BAD00EAF8F7 /* ImageSequence */,
 				D0EA40921B8D5B8C00EAF8F7 /* AppDelegate.h */,
 				D0EA40931B8D5B8C00EAF8F7 /* AppDelegate.m */,
+				D0AE7A551F6AFD5B00249D03 /* source */,
 				D056FA4F1F1B1A15000F0BAD /* car.seq */,
 				D0EA40951B8D5B8C00EAF8F7 /* ViewController.h */,
 				D0EA40961B8D5B8C00EAF8F7 /* ViewController.m */,
@@ -98,9 +97,6 @@
 			children = (
 				D0EA40B51B8D5BAD00EAF8F7 /* ISSequence.h */,
 				D0EA40B61B8D5BAD00EAF8F7 /* ISSequence.m */,
-				D0EA40B71B8D5BAD00EAF8F7 /* ISSequenceInfo.h */,
-				D0EA40B81B8D5BAD00EAF8F7 /* ISSequenceStream.c */,
-				D0EA40B91B8D5BAD00EAF8F7 /* ISSequenceStream.h */,
 				D0EA40BA1B8D5BAD00EAF8F7 /* ISSequenceView.h */,
 				D0EA40BB1B8D5BAD00EAF8F7 /* ISSequenceView.m */,
 			);
@@ -167,6 +163,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0AE7A561F6AFD5B00249D03 /* source in Resources */,
 				D056FA501F1B1A15000F0BAD /* car.seq in Resources */,
 				D0EA409A1B8D5B8C00EAF8F7 /* Main.storyboard in Resources */,
 				D0EA409F1B8D5B8C00EAF8F7 /* LaunchScreen.xib in Resources */,
@@ -181,7 +178,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0EA40BF1B8D5BAD00EAF8F7 /* ISSequenceStream.c in Sources */,
 				D0EA40C01B8D5BAD00EAF8F7 /* ISSequenceView.m in Sources */,
 				D0EA40BE1B8D5BAD00EAF8F7 /* ISSequence.m in Sources */,
 				D0EA40971B8D5B8C00EAF8F7 /* ViewController.m in Sources */,

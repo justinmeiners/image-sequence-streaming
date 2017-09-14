@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
-#import "ISSequenceInfo.h"
+#import "ISSequence.h"
 
 int main(int argc, const char * argv[])
 {
@@ -73,16 +73,21 @@ int main(int argc, const char * argv[])
             
             NSString* fullInputPath = [inputPath stringByAppendingPathComponent:[sequenceInputs objectAtIndex:i]];
             
-            
             NSData* rawImageData = [NSData dataWithContentsOfFile:fullInputPath];
             
             CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData((CFDataRef)rawImageData);
             CGImageRef image = CGImageCreateWithJPEGDataProvider(imgDataProvider, NULL, YES, kCGRenderingIntentDefault);
             
+            if (CGImageGetBitsPerPixel(image) != 32)
+            {
+                printf("image format is incorrect\n");
+                return EXIT_FAILURE;
+            }
+            
             NSUInteger imageWidth = CGImageGetWidth(image);
             NSUInteger imageHeight = CGImageGetHeight(image);
             
-            printf("  w: %i h: %i\n", (int)imageWidth, (int)imageHeight);
+            printf("  w: %lu h: %lu\n", imageWidth, imageHeight);
 
             
             CGImageRelease(image);

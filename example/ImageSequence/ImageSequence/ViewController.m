@@ -16,6 +16,13 @@
     
     ISSequence* sequence = [ISSequence sequenceNamed:@"car.seq"];
     
+    /*
+    ISSequence* sequence = [ISSequence sequenceFromPrefix:@"source/car_"
+                                             numberFormat:@"%04li"
+                                                   suffix:@".jpg"
+                                               startFrame:1
+                                               frameCount:155];  */
+    
     
     _sequenceView = [[ISSequenceDragView alloc] initWithSequence:sequence
                                                           loops:true

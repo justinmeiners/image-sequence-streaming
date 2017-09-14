@@ -539,8 +539,8 @@ static const GLfloat _kISSequenceViewUVs[] =
             glTexImage2D(GL_TEXTURE_2D,
                          0,
                          GL_RGBA,
-                         [_sequence width],
-                         [_sequence height],
+                         (GLsizei)[_sequence width],
+                         (GLsizei)[_sequence height],
                          0,
                          GL_BGRA,
                          GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(_pixelBuffers[i]));
@@ -554,8 +554,8 @@ static const GLfloat _kISSequenceViewUVs[] =
                                                                            NULL,
                                                                            GL_TEXTURE_2D,
                                                                            GL_RGBA,
-                                                                           [_sequence width],
-                                                                           [_sequence height],
+                                                                           (GLsizei)[_sequence width],
+                                                                           (GLsizei)[_sequence height],
                                                                            GL_BGRA,
                                                                            GL_UNSIGNED_BYTE,
                                                                            0,
@@ -625,8 +625,8 @@ static const GLfloat _kISSequenceViewUVs[] =
                         0,
                         0,
                         0,
-                        [_sequence width],
-                        [_sequence height],
+                        (GLsizei)[_sequence width],
+                        (GLsizei)[_sequence height],
                         GL_BGRA,
                         GL_UNSIGNED_BYTE,
                         CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]));
@@ -1094,7 +1094,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     // check if the frames match the size
     if ((range.length % _rowCount) != 0)
     {
-        NSLog(@"ISSequenceGridView requires frameCount: %i to be divisible by rowCount: %i", [[self sequence] frameCount], (int)_rowCount);
+        NSLog(@"ISSequenceGridView requires frameCount: %li to be divisible by rowCount: %li", [[self sequence] frameCount], _rowCount);
     }
     
     _columnCount = range.length / _rowCount;

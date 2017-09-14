@@ -39,7 +39,15 @@ sequencebuild folder_of_jpgs/ output.seq
 Loading a sequence file:
 
 ```Objective-C
+// loading from a compiled sequence file
 ISSequence* sequence = [ISSequence sequenceNamed:@"sequence.seq"];
+
+// loading from a collection of jpgs of the format car_0001.jpg
+ISSequence* sequence = [ISSequence sequenceFromPrefix:@"source/car_"
+                                         numberFormat:@"%04li"
+                                               suffix:@".jpg"
+                                           startFrame:1
+                                           frameCount:155];
 
 ```
 
@@ -84,8 +92,7 @@ ISSequenceGridView* view = [[ISSequenceGridView alloc] initWithSequence:sequence
 
 ### Components:
 - A macOS command line tool for compiling a collection of JPEG images into an optimized sequence file. (sequencebuild)
-- A C module for working with sequence files. (ISSequenceStream)
-- An Objective-C class for working with sequence files. (ISSequence)
+- An Objective-C class for loading compiled sequences or folders of JPEG. (ISSequence)
 - UIView base class for displaying interactive sequences with OpenGL ES and Core Video.
 - Interactive UIView classes for linear playback, horizontal and vertical drag control, and grid cell control, (ISSequenceView...)
 - An example project and sample animation sequence.

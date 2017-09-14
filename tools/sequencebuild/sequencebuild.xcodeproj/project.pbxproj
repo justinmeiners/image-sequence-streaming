@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D0AE7A591F6B064600249D03 /* ISSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AE7A581F6B064600249D03 /* ISSequence.m */; };
 		F4FBFBC1178341A400E2D1BD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FBFBC0178341A400E2D1BD /* main.m */; };
 		F4FBFBCC1783422C00E2D1BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4FBFBCB1783422C00E2D1BD /* Foundation.framework */; };
 		F4FBFBD31783486C00E2D1BD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4FBFBD21783486C00E2D1BD /* CoreGraphics.framework */; };
@@ -28,10 +29,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D0AE7A571F6B064600249D03 /* ISSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ISSequence.h; path = ../../source/ISSequence.h; sourceTree = "<group>"; };
+		D0AE7A581F6B064600249D03 /* ISSequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ISSequence.m; path = ../../source/ISSequence.m; sourceTree = "<group>"; };
 		F4FBFBBA178341A400E2D1BD /* sequencebuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sequencebuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4FBFBC0178341A400E2D1BD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F4FBFBCB1783422C00E2D1BD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		F4FBFBCE1783477400E2D1BD /* ISSequenceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ISSequenceInfo.h; path = ../../source/ISSequenceInfo.h; sourceTree = "<group>"; };
 		F4FBFBD21783486C00E2D1BD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F4FBFBD417834E3E00E2D1BD /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -89,7 +91,8 @@
 		F4FBFBCD1783475C00E2D1BD /* ISSequence */ = {
 			isa = PBXGroup;
 			children = (
-				F4FBFBCE1783477400E2D1BD /* ISSequenceInfo.h */,
+				D0AE7A571F6B064600249D03 /* ISSequence.h */,
+				D0AE7A581F6B064600249D03 /* ISSequence.m */,
 			);
 			name = ISSequence;
 			sourceTree = "<group>";
@@ -145,6 +148,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0AE7A591F6B064600249D03 /* ISSequence.m in Sources */,
 				F4FBFBC1178341A400E2D1BD /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
