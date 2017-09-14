@@ -32,11 +32,9 @@ typedef struct
 + (ISSequence*)sequenceFromFilepath:(NSString*)filepath;
 
 // for a list of files which are in the resources bundle
-+ (ISSequence*)sequenceFromPrefix:(NSString*)prefix
-                     numberFormat:(NSString*)numberFormat
-                           suffix:(NSString*)sufix
-                       startFrame:(NSInteger)startFrame
-                       frameCount:(NSInteger)count;
++ (ISSequence*)sequenceWithNameFormat:(NSString*)fileNameFormat
+                           startFrame:(NSInteger)startFrame
+                           frameCount:(NSInteger)count;
 
 - (void)getBytes:(char*)buffer atFrame:(NSInteger)frame;
 

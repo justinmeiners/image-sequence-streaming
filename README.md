@@ -43,11 +43,9 @@ Loading a sequence file:
 ISSequence* sequence = [ISSequence sequenceNamed:@"sequence.seq"];
 
 // loading from a collection of jpgs of the format car_0001.jpg
-ISSequence* sequence = [ISSequence sequenceFromPrefix:@"source/car_"
-                                         numberFormat:@"%04li"
-                                               suffix:@".jpg"
-                                           startFrame:1
-                                           frameCount:155];
+ISSequence* sequence = [ISSequence sequenceFromNameFormat:@"source/car_%04li.jpg"
+                                               startFrame:1
+                                               frameCount:155];
 
 ```
 

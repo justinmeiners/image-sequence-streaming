@@ -15,9 +15,7 @@
     CFDictionaryRef _imageSourceOptions;
 }
 
-@property(nonatomic, copy)NSString* prefix;
-@property(nonatomic, copy)NSString* suffix;
-@property(nonatomic, copy)NSString* numberFormat;
+@property(nonatomic, copy)NSString* fileNameFormat;
 
 - (NSURL*)frameUrl:(NSInteger)frame;
 
@@ -25,17 +23,13 @@
 
 @implementation ISPrefixSequence
 
-- (id)initWithPrefix:(NSString*)prefix
-        numberFormat:(NSString*)numberFormat
-              suffix:(NSString*)suffix
+- (id)initWithNameFormat:(NSString*)fileNameFormat
           startFrame:(NSInteger)startFrame
           frameCount:(NSInteger)count
 {
     if ((self = [super init]))
     {
-        self.prefix = prefix;
-        self.suffix = suffix;
-        self.numberFormat = numberFormat;
+        self.fileNameFormat = fileNameFormat;
         _startFrame = startFrame;
         _frameCount = count;
         
@@ -75,8 +69,8 @@
 
 - (NSURL*)frameUrl:(NSInteger)frame
 {
-    NSString* format = [NSString stringWithFormat:@"%@/%@%@%@", [[NSBundle mainBundle] resourcePath], _prefix, _numberFormat, _suffix];
-    NSString* path = [NSString stringWithFormat:format, _startFrame + frame];
+    NSString* fileName = [NSString stringWithFormat:_fileNameFormat, _startFrame + frame];
+    NSString* path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] resourcePath], fileName];
     
     return [NSURL fileURLWithPath:path];
 }
@@ -236,15 +230,11 @@
     return [[ISStreamSequence alloc] initWithFilepath:filepath];
 }
 
-+ (ISSequence*)sequenceFromPrefix:(NSString*)prefix
-                     numberFormat:(NSString*)numberFormat
-                           suffix:(NSString*)suffix
-                       startFrame:(NSInteger)startFrame
-                       frameCount:(NSInteger)count
++ (ISSequence*)sequenceWithNameFormat:(NSString*)fileNameFormat
+                           startFrame:(NSInteger)startFrame
+                           frameCount:(NSInteger)count
 {
-    return [[ISPrefixSequence alloc] initWithPrefix:prefix
-                                       numberFormat:numberFormat
-                                             suffix:suffix
+    return [[ISPrefixSequence alloc] initWithNameFormat:fileNameFormat
                                          startFrame:startFrame
                                          frameCount:count];
 }
