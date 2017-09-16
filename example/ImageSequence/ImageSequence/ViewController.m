@@ -15,8 +15,7 @@
     [super viewDidLoad];
     
     
-    //ISSequence* s = [ISSequence sequenceNamed:@"car.seq"];
-    
+    // ISSequence* sequence = [ISSequence sequenceNamed:@"car.seq"];
     
     
     ISSequence* sequence = [ISSequence sequenceWithNameFormat:@"source/car_%04li.jpg"
@@ -53,20 +52,20 @@
 
 - (void)viewWillLayoutSubviews
 {
-    float aspect;
-    float width;
-    float height;
+    CGFloat aspect;
+    CGFloat width;
+    CGFloat height;
     
     if (self.view.bounds.size.width < self.view.bounds.size.height)
     {
-        aspect = _sequenceView.sequence.height / (float)_sequenceView.sequence.width;
+        aspect = _sequenceView.sequence.height / (CGFloat)_sequenceView.sequence.width;
         
         width = self.view.bounds.size.width;
         height = self.view.bounds.size.width * aspect;
     }
     else
     {
-        aspect = _sequenceView.sequence.width / (float)_sequenceView.sequence.height;
+        aspect = _sequenceView.sequence.width / (CGFloat)_sequenceView.sequence.height;
         
         width = self.view.bounds.size.height * aspect;
         height = self.view.bounds.size.height;

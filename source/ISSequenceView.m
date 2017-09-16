@@ -64,20 +64,21 @@
 @end
 
 
-
 @interface ISSequenceView ()
 {
     EAGLContext* _context;
     CVOpenGLESTextureCacheRef _textureCache;
     GLuint _framebuffer;
     GLuint _colorbuffer;
-    int _currentBuffer;
-    int _bufferCount;
+    NSInteger _currentBuffer;
+    NSInteger _bufferCount;
     GLuint _vbo;
+    
+    NSInteger* _bufferFrames;
     CVPixelBufferRef* _pixelBuffers;
+    
     CVOpenGLESTextureRef* _cacheTextures;
     GLuint* _simulatorTextures;
-
     _ISSequenceDisplayLink* _displayLink;
     
     GLuint _shaderProgram;
@@ -342,7 +343,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 - (void)setupPixelbuffers
 {
     _pixelBuffers = calloc(sizeof(CVPixelBufferRef), _bufferCount);
-    assert(_pixelBuffers);
+    _bufferFrames = calloc(sizeof(NSInteger), _bufferCount);
     
     CFDictionaryRef empty;
     CFMutableDictionaryRef attrs;
@@ -380,13 +381,20 @@ static const GLfloat _kISSequenceViewUVs[] =
             [exception raise];
         }
         
+        _bufferFrames[i] = -1;
     }
 }
 
 - (void)shutdownPixelbuffers
 {
+    for (int i = 0; i < _bufferCount; i ++)
+        CVPixelBufferRelease(_pixelBuffers[i]);
+    
     free(_pixelBuffers);
     _pixelBuffers = NULL;
+    
+    free(_bufferFrames);
+    _bufferFrames = NULL;
 }
 
 - (void)setupOpenGL
@@ -586,15 +594,11 @@ static const GLfloat _kISSequenceViewUVs[] =
 {
     if (!_useTextureCache)
     {
-        glDeleteTextures(_bufferCount, _simulatorTextures);
+        glDeleteTextures((GLsizei)_bufferCount, _simulatorTextures);
         free(_simulatorTextures);
     }
     else
     {
-        for (int i = 0; i < _bufferCount; ++i)
-        {
-        }
-        
         free(_cacheTextures);
     }
 }
@@ -608,49 +612,51 @@ static const GLfloat _kISSequenceViewUVs[] =
 {    
     [EAGLContext setCurrentContext:_context];
     
-    /* lock the pixel buffer */
-    CVPixelBufferLockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
-    /* read from the sequence in to the pixel buffer */
-    [_sequence getBytes:CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]) atFrame:(int)_currentFrame];
-    
-    
-    /* texture caches map pixel buffers directly to a texture - update done
-     without a texture cache we need to repload our new data */
-    if (!_useTextureCache)
+    /* only update buffers when the frame is actually changing */
+    if (_bufferFrames[_currentBuffer] != _currentFrame)
     {
-        glBindTexture(GL_TEXTURE_2D, _simulatorTextures[_currentBuffer]);
+        _bufferFrames[_currentBuffer] = _currentFrame;
         
+        /* lock the pixel buffer */
+        CVPixelBufferLockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
+        /* read from the sequence into the pixel buffer */
+        [_sequence getBytes:CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]) atFrame:_currentFrame];
         
-        glTexSubImage2D(GL_TEXTURE_2D,
-                        0,
-                        0,
-                        0,
-                        (GLsizei)[_sequence width],
-                        (GLsizei)[_sequence height],
-                        GL_BGRA,
-                        GL_UNSIGNED_BYTE,
-                        CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]));
+        /* texture caches map pixel buffers directly to a texture - update done
+         without a texture cache we need to repload our new data */
+        if (!_useTextureCache)
+        {
+            glBindTexture(GL_TEXTURE_2D, _simulatorTextures[_currentBuffer]);
+            
+            
+            glTexSubImage2D(GL_TEXTURE_2D,
+                            0,
+                            0,
+                            0,
+                            (GLsizei)[_sequence width],
+                            (GLsizei)[_sequence height],
+                            GL_BGRA,
+                            GL_UNSIGNED_BYTE,
+                            CVPixelBufferGetBaseAddress(_pixelBuffers[_currentBuffer]));
+        }
+        
+        /* unlock pixel buffer */
+        CVPixelBufferUnlockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
     }
-    
-    /* unlock pixel buffer */
-    CVPixelBufferUnlockBaseAddress(_pixelBuffers[_currentBuffer], kCVPixelBufferLock_ReadOnly);
+
     
     /* prepare next frames buffer index */
-    ++_currentBuffer;
+    _currentBuffer = (_currentBuffer + 1) % _bufferCount;
     
-    if (_currentBuffer >= _bufferCount)
-    {
-        _currentBuffer = 0;
-    }
     
     glClear(GL_COLOR_BUFFER_BIT);
     
     CGFloat contentsScale = self.layer.contentsScale;
-    glViewport(0, 0, self.bounds.size.width * contentsScale, self.bounds.size.height * contentsScale);
+    glViewport(0, 0, (GLsizei)(self.bounds.size.width * contentsScale), (GLsizei)(self.bounds.size.height * contentsScale));
         
     if (_useTextureCache)
     {
-        CVOpenGLESTextureCacheFlush(_textureCache, 0); /* it is not clear what the flush does.. */
+        //CVOpenGLESTextureCacheFlush(_textureCache, 0); /* it is not clear what the flush does.. */
         glBindTexture(CVOpenGLESTextureGetTarget(_cacheTextures[_currentBuffer]), CVOpenGLESTextureGetName(_cacheTextures[_currentBuffer]));
     }
 
@@ -699,7 +705,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 @interface ISSequencePlaybackView ()
 {
-    int _animationTimer;
+    NSInteger _animationTimer;
 }
 
 @end
@@ -780,18 +786,18 @@ static const GLfloat _kISSequenceViewUVs[] =
     
     if (_loops)
     {
-        if (newFrame >= (int)(_range.location + _range.length))
+        if (newFrame >= (NSInteger)(_range.location + _range.length))
         {
-            newFrame = newFrame - (int)(_range.length);
+            newFrame = newFrame - _range.length;
         }
-        else if (newFrame < _range.location)
+        else if (newFrame < (NSInteger)_range.location)
         {
-            newFrame = newFrame + (int)(_range.length);
+            newFrame = newFrame + _range.length;
         }
     }
     else
     {
-        if (newFrame >= _range.location + _range.length)
+        if (newFrame >= (NSInteger)(_range.location + _range.length))
         {
             [self pause];
 
@@ -800,7 +806,7 @@ static const GLfloat _kISSequenceViewUVs[] =
                 [_delegate sequencePlaybackViewFinishedPlayback:self];
             }
         }
-        else if (newFrame < _range.location)
+        else if (newFrame < (NSInteger)(_range.location))
         {
             [self pause];
 
@@ -811,7 +817,7 @@ static const GLfloat _kISSequenceViewUVs[] =
         }
     }
     
-    if (newFrame >= _range.location && newFrame < _range.location + _range.length)
+    if (newFrame >= (_range.location && newFrame < (NSInteger)(_range.location + _range.length)))
     {
         [self jumpToFrame:newFrame];
     }
@@ -821,7 +827,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 - (void)setRange:(NSRange)range
 {
-    assert(range.location < [_sequence frameCount]);
+    assert((NSInteger)range.location < [_sequence frameCount]);
     
     _range = range;
     _animationTimer = 0;
@@ -829,7 +835,7 @@ static const GLfloat _kISSequenceViewUVs[] =
     [self jumpToFrame:_range.location];
 }
 
-- (void)setAnimationInterval:(int)animationInterval
+- (void)setAnimationInterval:(NSInteger)animationInterval
 {
     _animationInterval = animationInterval;
     _animationTimer = 0;
@@ -943,10 +949,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!_dragging)
-    {
-        return;
-    }
+    if (!_dragging) return;
     
     CGPoint point = [[touches anyObject] locationInView:self];
     CGPoint delta = CGPointMake(_lastDragPoint.x - point.x, _lastDragPoint.y - point.y);
@@ -968,7 +971,7 @@ static const GLfloat _kISSequenceViewUVs[] =
         
         if (fabs(_drag.x) > frameInterval)
         {
-            newFrame = [self currentFrame] + floor(_drag.x / frameInterval);
+            newFrame = [self currentFrame] + (NSInteger)floor(_drag.x / frameInterval);
             
             _drag.x -= floor(_drag.x / frameInterval) * frameInterval;
         }
@@ -986,7 +989,7 @@ static const GLfloat _kISSequenceViewUVs[] =
         
         if (fabs(_drag.y) > frameInterval)
         {
-            newFrame = [self currentFrame] + floor(_drag.y / frameInterval);
+            newFrame = [self currentFrame] + (NSInteger)floor(_drag.y / frameInterval);
             
             _drag.y -= floor(_drag.y / frameInterval) * frameInterval;
         }
@@ -994,22 +997,22 @@ static const GLfloat _kISSequenceViewUVs[] =
 
     if (_loops)
     {
-        if (newFrame >= (int)(_range.location + _range.length))
+        if (newFrame >= (NSInteger)(_range.location + _range.length))
         {
-            newFrame = newFrame - (int)(_range.length);
+            newFrame = newFrame - _range.length;
         }
-        else if (newFrame < (int)(_range.location))
+        else if (newFrame < (NSInteger)(_range.location))
         {
-            newFrame = newFrame + (int)(_range.length);
+            newFrame = newFrame + _range.length;
         }
     }
     else
     {
-        if (newFrame >= (int)(_range.location + _range.length))
+        if (newFrame >= (NSInteger)(_range.location + _range.length))
         {
-            newFrame = (int)(_range.location + _range.length - 1);
+            newFrame = _range.location + _range.length - 1;
         }
-        else if (newFrame < (int)_range.location)
+        else if (newFrame < (NSInteger)_range.location)
         {
             newFrame = _range.location;
         }
@@ -1036,7 +1039,7 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 - (void)setRange:(NSRange)range
 {
-    assert(range.location < [_sequence frameCount]);
+    assert((NSInteger)range.location < [_sequence frameCount]);
     
     _range = range;
     [self jumpToFrame:_range.location];
@@ -1119,32 +1122,26 @@ static const GLfloat _kISSequenceViewUVs[] =
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!_touchEnabled)
-    {
-        return;
-    }
+    if (!_touchEnabled) return;
     
     CGPoint point = [[touches anyObject] locationInView:self];
     
     CGFloat rowWidth = self.bounds.size.width / (CGFloat)_rowCount;
     CGFloat columnHeight = self.bounds.size.height / (CGFloat)_columnCount;
     
-    [self jumpToFrameAtRow:(int)floor(point.x / rowWidth) column:(int)floor(point.y / columnHeight)];
+    [self jumpToFrameAtRow:(NSInteger)floor(point.x / rowWidth) column:(NSInteger)floor(point.y / columnHeight)];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!_touchEnabled)
-    {
-        return;
-    }
+    if (!_touchEnabled) return;
     
     CGPoint point = [[touches anyObject] locationInView:self];
     
     CGFloat rowWidth = self.bounds.size.width / (CGFloat)_rowCount;
     CGFloat columnHeight = self.bounds.size.height / (CGFloat)_columnCount;
     
-    [self jumpToFrameAtRow:(int)floor(point.x / rowWidth) column:(int)floor(point.y / columnHeight)];
+    [self jumpToFrameAtRow:(NSInteger)floor(point.x / rowWidth) column:(NSInteger)floor(point.y / columnHeight)];
 }
 
 

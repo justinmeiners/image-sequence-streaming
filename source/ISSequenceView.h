@@ -75,7 +75,7 @@ typedef enum
 @property(nonatomic, assign)BOOL loops;
 @property(nonatomic, assign)NSRange range;
 @property(nonatomic, assign)ISSequencePlaybackDirection playbackDirection;
-@property(nonatomic, assign)int animationInterval;
+@property(nonatomic, assign)NSInteger animationInterval;
 
 - (id)initWithSequence:(ISSequence*)sequence
        refreshInterval:(NSInteger)interval

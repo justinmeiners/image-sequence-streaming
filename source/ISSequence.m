@@ -83,7 +83,7 @@
     CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil);
     assert(CGImageGetWidth(image) == _width);
     assert(CGImageGetHeight(image) == _height);
-
+    
     CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
     CFDataGetBytes(rawData, CFRangeMake(0, CFDataGetLength(rawData)), (UInt8*)buffer);
     
