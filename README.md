@@ -28,6 +28,11 @@ This project aims to overcome these limitations by streaming individual frames i
 
 The main tradeoff for this approach, is that a collection of JPEGs need to be precompiled into a single file using a command line tool. Thanks to JPEGs effecient compression, the filesizes are very small. 
 
+**Note** that this project originally used an alternative image compression mechanism and was much more complex. The idea was that 
+if the images on disk matched the GPU format as closely as possible, this would minimze the refresh time for a frame. It turns
+out that disk bandwidth is more important than decompression time. JPGs are the fastest because they compress well
+and the iOS devices have dedicated hardware for decoding them.
+
 ## Usage:
 
 Compiling a folder of JPEGs into a sequence file in terminal:
@@ -94,7 +99,6 @@ ISSequenceGridView* view = [[ISSequenceGridView alloc] initWithSequence:sequence
 - UIView base class for displaying interactive sequences with OpenGL ES and Core Video.
 - Interactive UIView classes for linear playback, horizontal and vertical drag control, and grid cell control, (ISSequenceView...)
 - An example project and sample animation sequence.
-
 
 ## Credits:
 
